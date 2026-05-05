@@ -14,13 +14,24 @@ export default function Footer() {
           </p>
 
           <p className="text-slate-500 text-sm leading-relaxed">
-            Complete Printing & DSC solutions under one roof with premium quality
-            and fast delivery.
+            Complete printing, branding & DSC solutions under one roof with premium quality and fast delivery.
           </p>
 
-          {/* 🔥 EXTRA TRUST LINE */}
+          {/* Trust Line */}
           <p className="text-green-400 text-sm mt-4">
             ⚡ Same-day printing available
+          </p>
+
+          //{/* 🔥 INSTAGRAM */}
+          //<p className="text-slate-400 text-sm mt-4">
+            //📸 Follow us:{" "}
+            //<a
+              //href="https://instagram.com/printeda.in"
+              //target="_blank"
+              //className="text-blue-400 hover:text-blue-300 transition"
+            >
+              //@printeda.in
+            </a>
           </p>
         </div>
 
@@ -63,7 +74,6 @@ export default function Footer() {
             Our Services
           </h4>
 
-          {/* 🔥 2 COLUMN GRID */}
           <div className="grid grid-cols-2 gap-2 text-slate-400 text-sm">
 
             <a href="#services" className="hover:text-white transition">
@@ -103,14 +113,22 @@ export default function Footer() {
 
       </div>
 
-      {/* 🔥 TRUST LINE */}
+      {/* TRUST LINE */}
       <div className="text-center mt-10 text-slate-500 text-sm">
         Trusted by 10,000+ customers since 2009
       </div>
 
-      {/* 🔥 DIVIDER */}
-      <div className="border-t border-slate-800 mt-6 pt-6 text-center text-slate-600 text-xs">
-        © 2026 Printeda. All rights reserved.
+      {/* DIVIDER */}
+      <div className="border-t border-slate-800 mt-6 pt-6 text-center text-slate-600 text-xs space-y-2">
+        
+        <p>© 2026 Printeda. All rights reserved.</p>
+
+        {/* 🔥 CLEAN DEV CREDIT */}
+        <p>
+          Designed & Developed by{"Shariq Saifi"}
+          <span className="text-slate-400">Sam</span>
+        </p>
+
       </div>
     </footer>
   );
