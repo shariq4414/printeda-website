@@ -11,39 +11,39 @@ export default function WhyUs() {
         {/* Heading */}
         <Reveal>
           <h2 className="text-4xl md:text-5xl font-black mb-4 text-slate-900">
-            The Printeda Advantage
+            Why Choose Printeda?
           </h2>
 
           <p className="text-blue-600 font-semibold uppercase tracking-wide mb-6">
-            100% Under One Roof Printing Solution
+            Complete Printing & Branding Under One Roof
           </p>
 
-          <p className="text-slate-600 max-w-xl mx-auto mb-16">
-            From single custom orders to bulk business printing — we deliver
-            unmatched quality, speed, and reliability trusted by 10,000+ clients.
+          <p className="text-slate-600 max-w-2xl mx-auto mb-16 text-base md:text-lg">
+            Whether it's a single custom print or bulk business order — we deliver
+            fast, reliable, and high-quality results trusted by businesses and individuals across Bulandshahr.
           </p>
         </Reveal>
 
         {/* Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
 
-          {/* Card 1 (Highlighted) */}
+          {/* Card 1 */}
           <Reveal delay={0.1}>
             <div className="p-8 bg-white rounded-3xl border border-blue-500 
             shadow-lg scale-105 hover:shadow-2xl transition-all duration-300">
 
               <span className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full mb-3 inline-block">
-                Most Important
+                Most Popular
               </span>
 
               <Layers className="mx-auto text-blue-600 mb-4" size={34} />
 
               <h3 className="font-bold text-lg mb-2">
-                Under One Roof
+                All-in-One Solution
               </h3>
 
               <p className="text-sm text-slate-600">
-                No need to visit multiple shops — everything available in one place.
+                From DSC to banners, T-shirts to branding — everything in one place.
               </p>
 
             </div>
@@ -58,11 +58,11 @@ export default function WhyUs() {
               <Zap className="mx-auto text-purple-600 mb-4" size={34} />
 
               <h3 className="font-bold text-lg mb-2">
-                Modern Technology
+                Modern Machines
               </h3>
 
               <p className="text-sm text-slate-600">
-                Advanced machines for sharp, premium & consistent output.
+                Latest printing technology for sharp, premium, and consistent quality.
               </p>
 
             </div>
@@ -77,11 +77,11 @@ export default function WhyUs() {
               <ShieldCheck className="mx-auto text-green-600 mb-4" size={34} />
 
               <h3 className="font-bold text-lg mb-2">
-                Trusted Since 2009
+                15+ Years Experience
               </h3>
 
               <p className="text-sm text-slate-600">
-                15+ years experience with 10,000+ satisfied customers.
+                Serving Bulandshahr since 2009 with consistent quality and trusted service.
               </p>
 
             </div>
@@ -96,11 +96,11 @@ export default function WhyUs() {
               <Clock className="mx-auto text-orange-600 mb-4" size={34} />
 
               <h3 className="font-bold text-lg mb-2">
-                Fast Delivery
+                Fast Turnaround
               </h3>
 
               <p className="text-sm text-slate-600">
-                urgent delivery available for business needs.
+                Same-day and urgent delivery options available for business needs.
               </p>
 
             </div>
@@ -108,19 +108,19 @@ export default function WhyUs() {
 
         </div>
 
-        {/* 🔥 CTA (VERY IMPORTANT) */}
+        {/* CTA */}
         <div className="mt-16">
 
-          <p className="text-slate-600 mb-4">
-            Ready to start your printing project?
+          <p className="text-slate-600 mb-4 text-base">
+            Need printing urgently? Let’s get started today.
           </p>
 
           <a
             href="https://wa.me/919719847661"
             target="_blank"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition hover:scale-105"
+            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition hover:scale-105"
           >
-            Start Your Order <ArrowRight size={18} />
+            Chat on WhatsApp <ArrowRight size={18} />
           </a>
 
         </div>
