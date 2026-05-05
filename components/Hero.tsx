@@ -1,6 +1,6 @@
 "use client";
 
-import { Printer, ShieldCheck } from "lucide-react";
+import { Phone, MessageCircle, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 
 export default function Hero() {
@@ -30,37 +30,56 @@ export default function Hero() {
             </span>
           </h1>
 
+          {/* 🔥 Trust Line */}
+          <p className="text-green-600 font-semibold mb-2">
+            ⭐ Trusted by 10,000+ Customers in Bulandshahr
+          </p>
+
           {/* Subheadline */}
           <p className="text-blue-600 font-semibold mb-4">
-            Your Complete Printing & Branding Solution
+            Fast • Affordable • Same-Day Delivery Available
           </p>
 
           {/* Description */}
           <p className="text-lg text-slate-600 mb-8 max-w-lg">
-            No need to visit multiple shops — from Digital Signatures to T-shirts,
-            Banners, Stickers & Branding — everything in one place with fast delivery.
+            From Digital Signatures to T-shirts, Banners, Stickers & Branding —
+            everything in one place. No need to visit multiple shops.
           </p>
 
-          {/* Buttons */}
+          {/* 🔥 CALL + WHATSAPP BUTTONS */}
           <div className="flex flex-wrap gap-4">
-            <a href="#contact">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
-                Start Printing <Printer size={18} />
+
+            {/* Call Button */}
+            <a href="tel:+919719847661">
+              <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
+                Call Now <Phone size={18} />
               </button>
             </a>
 
+            {/* WhatsApp Button */}
+            <a
+              href="https://wa.me/919719847661?text=Hi%20Printeda%2C%20I%20want%20printing%20service"
+              target="_blank"
+            >
+              <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
+                WhatsApp Now <MessageCircle size={18} />
+              </button>
+            </a>
+
+            {/* DSC Button */}
             <a href="/services/dsc">
               <button className="bg-white border-2 border-slate-200 hover:border-blue-600 text-slate-800 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition">
                 Apply for DSC <ShieldCheck size={18} />
               </button>
             </a>
+
           </div>
 
           {/* Trust Strip */}
           <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500 font-medium">
             <span>✔ 15+ Years Experience</span>
             <span>✔ 10,000+ Clients Served</span>
-            <span>✔ Trusted Since 2009</span>
+            <span>✔ Same-Day Service Available</span>
           </div>
 
         </div>
@@ -69,14 +88,14 @@ export default function Hero() {
         <div className="relative h-[400px] md:h-[500px]">
 
           <Image
-            src="/hero-printing.jpg"  // 👉 put real image in public folder
+            src="/hero-printing.jpg"
             alt="Printing Services"
             fill
             className="object-cover rounded-3xl shadow-2xl"
           />
 
           {/* Floating Card */}
-          <div className="absolute bottom-6 left-6 bg-slate px-4 py-2 rounded-xl shadow-md text-sm font-semibold">
+          <div className="absolute bottom-6 left-6 bg-white px-4 py-2 rounded-xl shadow-md text-sm font-semibold">
             ⭐ Trusted by 10,000+ Clients
           </div>
 
