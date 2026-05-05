@@ -27,7 +27,7 @@ export default function Contact() {
             </p>
 
             <p className="text-slate-400 mb-8 text-lg">
-              1000+ customers trust Printeda for fast, reliable & premium printing.
+              10,000+ customers trust Printeda for fast, reliable & premium printing.
             </p>
 
             {/* WhatsApp */}

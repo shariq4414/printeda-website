@@ -30,9 +30,9 @@ export default function Hero() {
             </span>
           </h1>
 
-          {/* Trust Line */}
+          {/* 🔥 UPDATED TRUST LINE */}
           <p className="text-green-600 font-semibold mb-2">
-            ⭐ Trusted by 10,000+ Clients in Bulandshahr
+            ⭐ Trusted by 10,000+ Clients Across Bulandshahr & Nearby Areas
           </p>
 
           {/* Subheadline */}
@@ -42,7 +42,7 @@ export default function Hero() {
 
           {/* Description */}
           <p className="text-lg text-slate-600 mb-8 max-w-lg">
-            From Digital Signatures to T-shirts, Banners, Stickers & Branding — 
+            From Digital Signatures to T-shirts, banners, stickers & branding — 
             everything in one place with fast delivery and reliable service.
           </p>
 
@@ -67,16 +67,6 @@ export default function Hero() {
               </button>
             </a>
 
-            {/* 🔥 WHATSAPP BUTTON */}
-            <a
-              href="https://wa.me/919719847661?text=Hi%20Printeda%2C%20I%20need%20printing%20service"
-              target="_blank"
-            >
-              <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
-                WhatsApp Now <MessageCircle size={18} />
-              </button>
-            </a>
-
           </div>
 
           {/* Trust Strip */}
@@ -93,7 +83,7 @@ export default function Hero() {
 
           <Image
             src="/hero-printing.jpg"
-            alt="Printing Services in Bulandshahr"
+            alt="Printing Services in Bulandshahr and Nearby Areas"
             fill
             priority
             className="object-cover rounded-3xl shadow-2xl"
@@ -101,7 +91,7 @@ export default function Hero() {
 
           {/* Floating Card */}
           <div className="absolute bottom-6 left-6 bg-white px-4 py-2 rounded-xl shadow-md text-sm font-semibold">
-            ⭐ Trusted by 10,000+ Clients
+            ⭐ 10,000+ Clients Served
           </div>
 
         </div>

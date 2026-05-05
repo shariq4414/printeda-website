@@ -78,7 +78,7 @@ export default function Products() {
           </h2>
 
           <p className="text-slate-600 max-w-xl mx-auto">
-            Affordable pricing with premium quality — trusted by 10,000+ customers.
+            Affordable pricing with premium quality.
           </p>
         </div>
 
