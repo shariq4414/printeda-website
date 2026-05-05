@@ -81,7 +81,7 @@ export default function WhyUs() {
               </h3>
 
               <p className="text-sm text-slate-600">
-                15+ years experience with 1000+ satisfied customers.
+                15+ years experience with 10,000+ satisfied customers.
               </p>
 
             </div>

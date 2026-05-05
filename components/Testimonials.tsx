@@ -10,12 +10,12 @@ const reviews = [
     text: "School sports day ke liye wooden trophies aur medals ka bulk order diya tha. Finish ekdum premium thi aur delivery time par aayi. Great work by the team.",
   },
   {
-    name: "Priya Singh",
-    company: "Contractor",
+    name: "Neha Aggarwal",
+    company: "Tax Consultant",
     text: "Main pichle 5 saal se Anwar Computer se judi hui hoon aur inki service bhi utni hi fast hai. Mera Class 3 DSC token inhone same-day ready kar diya. Best in Kala Aam!",
   },
   {
-    name: "Amit Verma",
+    name: "Amit",
     company: "Event Organizer",
     text: "Humare staff ke ID cards aur flex banners ki quality ekdum top-notch thi. Printeda ka 'Under One Roof' concept waqai time bachata hai. Highly recommended.",
   },

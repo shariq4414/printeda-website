@@ -31,7 +31,7 @@ export default function DSCPage() {
                 <li>✅ Class 3 DSC for GST & e-Tender</li>
                 <li>✅ Same-day approval (Paperless)</li>
                 <li>✅ Token installation support</li>
-                <li>✅ Trusted by 1000+ clients</li>
+                <li>✅ Trusted by 10,000+ clients</li>
               </ul>
             </div>
 
@@ -40,7 +40,7 @@ export default function DSCPage() {
                 Documents Required:
               </h4>
               <p className="text-sm text-slate-600">
-                PAN Card, Aadhaar Card, Mobile Number (for OTP verification)
+                PAN Card, Aadhaar Card, E-Mail, Mobile Number (for OTP verification)
               </p>
             </div>
 
