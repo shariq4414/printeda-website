@@ -37,7 +37,7 @@ export default function Navbar() {
           </Link>
 
           <Link href="#gallery" className="hover:text-blue-600 transition">
-          About us
+          
           </Link>
           
 
