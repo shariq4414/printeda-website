@@ -22,17 +22,6 @@ export default function Footer() {
             ⚡ Same-day printing available
           </p>
 
-          //{/* 🔥 INSTAGRAM */}
-          //<p className="text-slate-400 text-sm mt-4">
-            //📸 Follow us:{" "}
-            //<a
-              //href="https://instagram.com/printeda.in"
-              //target="_blank"
-              //className="text-blue-400 hover:text-blue-300 transition"
-            >
-              //@printeda.in
-            </a>
-          </p>
         </div>
 
         {/* MIDDLE - CONTACT */}
@@ -125,8 +114,8 @@ export default function Footer() {
 
         {/* 🔥 CLEAN DEV CREDIT */}
         <p>
-          Designed & Developed by{"Shariq Saifi"}
-          <span className="text-slate-400">Sam</span>
+          Designed & Developed by{" "}
+          <span className="text-slate-400">Shariq Saifi</span>
         </p>
 
       </div>
