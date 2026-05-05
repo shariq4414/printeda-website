@@ -1,6 +1,6 @@
 "use client";
 
-import { Printer, ShieldCheck, PhoneCall } from "lucide-react";
+import { Printer, ShieldCheck, PhoneCall, MessageCircle } from "lucide-react";
 import Image from "next/image";
 
 export default function Hero() {
@@ -30,6 +30,11 @@ export default function Hero() {
             </span>
           </h1>
 
+          {/* Trust Line */}
+          <p className="text-green-600 font-semibold mb-2">
+            ⭐ Trusted by 10,000+ Clients in Bulandshahr
+          </p>
+
           {/* Subheadline */}
           <p className="text-blue-600 font-semibold mb-4">
             Digital Printing • Branding • DSC Services
@@ -37,8 +42,8 @@ export default function Hero() {
 
           {/* Description */}
           <p className="text-lg text-slate-600 mb-8 max-w-lg">
-            From Digital Signatures to T-shirts, Banners, Stickers & Business Branding — 
-            everything in one place with fast delivery in Bulandshahr.
+            From Digital Signatures to T-shirts, Banners, Stickers & Branding — 
+            everything in one place with fast delivery and reliable service.
           </p>
 
           {/* Buttons */}
@@ -62,13 +67,23 @@ export default function Hero() {
               </button>
             </a>
 
+            {/* 🔥 WHATSAPP BUTTON */}
+            <a
+              href="https://wa.me/919719847661?text=Hi%20Printeda%2C%20I%20need%20printing%20service"
+              target="_blank"
+            >
+              <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
+                WhatsApp Now <MessageCircle size={18} />
+              </button>
+            </a>
+
           </div>
 
           {/* Trust Strip */}
           <div className="mt-8 flex flex-wrap gap-6 text-sm text-slate-500 font-medium">
             <span>✔ 15+ Years Experience</span>
             <span>✔ 10,000+ Clients Served</span>
-            <span>✔ Fast Delivery</span>
+            <span>✔ Same-Day Service Available</span>
           </div>
 
         </div>

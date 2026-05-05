@@ -34,11 +34,7 @@ export default function Navbar() {
 
           <Link href="#services" className="hover:text-blue-600 transition">
             Services
-          </Link>
-
-          <Link href="#gallery" className="hover:text-blue-600 transition">
-          </Link>
-          
+          </Link>          
 
           <Link href="/services/dsc" className="hover:text-blue-600 transition">
             DSC
