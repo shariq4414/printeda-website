@@ -8,32 +8,35 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title:
-    "Best Printing Shop in Bulandshahr | Class 3 DSC Provider in Kala Aam | Printeda",
+    "Best Printing Shop & DSC Provider in Bulandshahr | Printeda",
 
   description:
-    "Printeda (formerly Anwar Computer) is the best printing shop in Bulandshahr offering flex banners, visiting cards, stickers, T-shirts & Class 3 DSC services in Kala Aam. Trusted since 2009 with 10,000+ clients.",
+    "Printeda (formerly Anwar Computer) is a trusted printing shop & Class 3 DSC provider in Bulandshahr offering flex printing, banners, visiting cards, stickers, T-shirts, branding, custom bottles & digital signature solutions since 2009.",
 
   keywords: [
     "Best printing shop in Bulandshahr",
     "Printing services Bulandshahr",
-    "Flex banner printing Kala Aam",
-    "Class 3 DSC provider Kala Aam",
+    "Flex banner printing Bulandshahr",
+    "Class 3 DSC provider Bulandshahr",
     "Digital Signature Certificate Bulandshahr",
     "Visiting card printing Bulandshahr",
-    "Custom T-shirt printing Bulandshahr",
     "Sticker printing Bulandshahr",
     "Custom bottle printing Bulandshahr",
     "Graphic designing Bulandshahr",
+    "T-shirt printing Bulandshahr",
+    "Flex printing Kala Aam",
+    "Printing shop Kala Aam",
     "Anwar Computer",
     "Printeda",
   ],
 
   openGraph: {
     title:
-      "Best Printing Shop in Bulandshahr | Printeda",
+      "Best Printing Shop & DSC Provider in Bulandshahr | Printeda",
 
     description:
-      "Flex printing, banners, DSC & complete branding solutions in Kala Aam. Trusted since 2009.",
+      "description:
+      "Printeda (formerly Anwar Computer) is a trusted printing shop & Class 3 DSC provider in Bulandshahr offering flex printing, banners, visiting cards, stickers, custom T-shirts, branding and digital signature solutions since 2009. Trusted by 10,000+ clients across Bulandshahr & nearby areas.",
 
     url: "https://printeda.in",
 
@@ -56,7 +59,7 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "googlef4675ceb6ffd382f.html",
+    google: "f4675ceb6ffd382f",
   },
 };
 
