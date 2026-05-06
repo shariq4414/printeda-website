@@ -7,8 +7,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Best Printing Shop in Bulandshahr | Class 3 DSC Provider in Kala Aam | Printeda",
-  
+  title:
+    "Best Printing Shop in Bulandshahr | Class 3 DSC Provider in Kala Aam | Printeda",
+
   description:
     "Printeda (formerly Anwar Computer) is the best printing shop in Bulandshahr offering flex banners, visiting cards, stickers, T-shirts & Class 3 DSC services in Kala Aam. Trusted since 2009 with 10,000+ clients.",
 
@@ -20,6 +21,9 @@ export const metadata: Metadata = {
     "Digital Signature Certificate Bulandshahr",
     "Visiting card printing Bulandshahr",
     "Custom T-shirt printing Bulandshahr",
+    "Sticker printing Bulandshahr",
+    "Custom bottle printing Bulandshahr",
+    "Graphic designing Bulandshahr",
     "Anwar Computer",
     "Printeda",
   ],
@@ -27,11 +31,16 @@ export const metadata: Metadata = {
   openGraph: {
     title:
       "Best Printing Shop in Bulandshahr | Printeda",
+
     description:
       "Flex printing, banners, DSC & complete branding solutions in Kala Aam. Trusted since 2009.",
-    url: "https://printeda.vercel.app",
+
+    url: "https://printeda.in",
+
     siteName: "Printeda",
+
     type: "website",
+
     images: [
       {
         url: "/og-image.png",
@@ -45,6 +54,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+
+  verification: {
+    google: "googlef4675ceb6ffd382f.html",
+  },
 };
 
 export default function RootLayout({
@@ -55,12 +68,12 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <body className={`${inter.className} min-h-full flex flex-col`}>
-
+        
         <div className="flex-1 pb-20">
           {children}
         </div>
 
-        {/* FLOATING BUTTONS */}
+        {/* Floating Buttons */}
         <FloatingCallButton />
         <WhatsAppButton />
 
