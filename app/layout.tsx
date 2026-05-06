@@ -35,7 +35,6 @@ export const metadata: Metadata = {
       "Best Printing Shop & DSC Provider in Bulandshahr | Printeda",
 
     description:
-      "description:
       "Printeda (formerly Anwar Computer) is a trusted printing shop & Class 3 DSC provider in Bulandshahr offering flex printing, banners, visiting cards, stickers, custom T-shirts, branding and digital signature solutions since 2009. Trusted by 10,000+ clients across Bulandshahr & nearby areas.",
 
     url: "https://printeda.in",
