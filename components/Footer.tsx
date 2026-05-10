@@ -14,14 +14,14 @@ export default function Footer() {
           </p>
 
           <p className="text-slate-500 text-sm leading-relaxed">
-            Complete printing, branding & DSC solutions under one roof with premium quality and fast delivery.
+            Complete printing, branding & DSC solutions under one roof
+            with premium quality and fast delivery.
           </p>
 
           {/* Trust Line */}
           <p className="text-green-400 text-sm mt-4">
             ⚡ Same-day printing available
           </p>
-
         </div>
 
         {/* MIDDLE - CONTACT */}
@@ -37,17 +37,21 @@ export default function Footer() {
             </li>
 
             <li className="flex items-center gap-2">
-              📞 
-              <a href="tel:+919719847661" className="hover:text-white transition">
+              📞
+              <a
+                href="tel:+919719847661"
+                className="hover:text-white transition"
+              >
                 +91 9719847661
               </a>
             </li>
 
             <li className="flex items-center gap-2">
-              💬 
+              💬
               <a
                 href="https://wa.me/919719847661"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-green-400 hover:text-green-300 transition"
               >
                 Chat on WhatsApp
@@ -109,18 +113,23 @@ export default function Footer() {
 
       {/* DIVIDER */}
       <div className="border-t border-slate-800 mt-6 pt-6 text-center text-slate-600 text-xs space-y-2">
-        
+
         <p>© 2026 Printeda. All rights reserved.</p>
 
-        {/* 🔥 CLEAN DEV CREDIT */}
+        {/* DEV CREDIT */}
         <p>
           Designed & Developed by{" "}
           <span className="text-slate-400">
-            Er.Mohd Shariq (CSE) 
+            Er. Mohd Shariq (CSE)
             <br />
-          <span classname="text-slate-500">7983764414</span>
+
+            <a
+              href="tel:+917983764414"
+              className="text-slate-500 hover:text-white transition"
+            >
+              7983764414
+            </a>
           </span>
-          
         </p>
 
       </div>
