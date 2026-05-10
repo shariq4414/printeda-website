@@ -115,8 +115,10 @@ export default function Footer() {
         {/* 🔥 CLEAN DEV CREDIT */}
         <p>
           Designed & Developed by{" "}
-          <span className="text-slate-400">Er.Mohd Shariq (CSE)
-            <br>78983764414</br>
+          <span className="text-slate-400">
+            Er.Mohd Shariq (CSE) 
+            <br />
+          <span classname="text-slate-500">7983764414</span>
           </span>
           
         </p>
