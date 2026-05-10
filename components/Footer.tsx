@@ -115,8 +115,8 @@ export default function Footer() {
         {/* 🔥 CLEAN DEV CREDIT */}
         <p>
           Designed & Developed by{" "}
-          <span className="text-slate-400">Er.Mohd Shariq</span>
-          <span>CSE</span>
+          <span className="text-slate-400">Er.Mohd Shariq (CSE)</span>
+          
         </p>
 
       </div>
