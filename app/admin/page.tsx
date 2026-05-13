@@ -23,32 +23,35 @@ interface OrderType {
 
 export default function AdminPage() {
 
-  // =========================
-  // CLERK AUTH
-  // =========================
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, user } =
+    useUser();
 
-  // =========================
-  // STATES
-  // =========================
-  const [orders, setOrders] = useState<OrderType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] =
+    useState<OrderType[]>([]);
 
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] =
+    useState(true);
+
+  const [creating, setCreating] =
+    useState(false);
+
+  const [search, setSearch] =
+    useState("");
 
   const [showModal, setShowModal] =
     useState(false);
 
-  const [formData, setFormData] = useState({
-    customerName: "",
-    phone: "",
-    product: "",
-    quantity: 1,
-    amount: 0,
-    paid: 0,
-    remaining: 0,
-    status: "Order Received",
-  });
+  const [formData, setFormData] =
+    useState({
+      customerName: "",
+      phone: "",
+      product: "",
+      quantity: 1,
+      amount: 0,
+      paid: 0,
+      remaining: 0,
+      status: "Order Received",
+    });
 
   // =========================
   // ADMIN EMAIL
@@ -72,7 +75,8 @@ export default function AdminPage() {
         }
       );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       setOrders(data.orders || []);
 
@@ -88,7 +92,7 @@ export default function AdminPage() {
   };
 
   // =========================
-  // LOAD ORDERS
+  // LOAD DATA
   // =========================
   useEffect(() => {
 
@@ -103,17 +107,24 @@ export default function AdminPage() {
   // =========================
   const createOrder = async () => {
 
+    if (creating) return;
+
     try {
+
+      setCreating(true);
 
       const orderId =
         `PRT-${Math.floor(
-          100000 + Math.random() * 900000
+          100000 +
+          Math.random() * 900000
         )}`;
 
       const remaining =
-        formData.amount - formData.paid;
+        formData.amount -
+        formData.paid;
 
       await fetch("/api/orders", {
+
         method: "POST",
 
         headers: {
@@ -147,6 +158,10 @@ export default function AdminPage() {
 
       console.log(error);
 
+    } finally {
+
+      setCreating(false);
+
     }
   };
 
@@ -157,9 +172,10 @@ export default function AdminPage() {
     id: string
   ) => {
 
-    const confirmDelete = confirm(
-      "Delete this order?"
-    );
+    const confirmDelete =
+      confirm(
+        "Delete this order?"
+      );
 
     if (!confirmDelete) return;
 
@@ -194,7 +210,7 @@ export default function AdminPage() {
   }
 
   // =========================
-  // REDIRECT LOGIN
+  // LOGIN CHECK
   // =========================
   if (!isSignedIn) {
     return <RedirectToSignIn />;
@@ -218,10 +234,12 @@ export default function AdminPage() {
   // =========================
   // TOTALS
   // =========================
-  const totalRevenue = orders.reduce(
-    (acc, item) => acc + item.amount,
-    0
-  );
+  const totalRevenue =
+    orders.reduce(
+      (acc, item) =>
+        acc + item.amount,
+      0
+    );
 
   const totalRemaining =
     orders.reduce(
@@ -231,7 +249,7 @@ export default function AdminPage() {
     );
 
   // =========================
-  // FILTERED ORDERS
+  // SEARCH FILTER
   // =========================
   const filteredOrders =
     orders.filter((order) =>
@@ -246,9 +264,7 @@ export default function AdminPage() {
 
     <div className="min-h-screen bg-gray-100 p-6">
 
-      {/* ========================= */}
-      {/* TOP BAR */}
-      {/* ========================= */}
+      {/* TOP */}
       <div className="flex items-center justify-between mb-8">
 
         <div>
@@ -282,9 +298,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* STATS */}
-      {/* ========================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
         <div className="bg-white p-6 rounded-2xl shadow-lg">
@@ -325,9 +339,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* SEARCH */}
-      {/* ========================= */}
       <div className="bg-white p-4 rounded-2xl shadow-lg mb-6">
 
         <input
@@ -342,9 +354,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* TABLE */}
-      {/* ========================= */}
       <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
 
         <table className="w-full">
@@ -479,20 +489,19 @@ export default function AdminPage() {
                                       "application/json",
                                   },
 
-                                body: JSON.stringify(
-                                  {
-                                    status:
-                                      newStatus,
-                                  }
-                                ),
+                                body:
+                                  JSON.stringify(
+                                    {
+                                      status:
+                                        newStatus,
+                                    }
+                                  ),
                               }
                             );
 
                             fetchOrders();
 
-                          } catch (
-                            error
-                          ) {
+                          } catch (error) {
 
                             console.log(
                               error
@@ -535,24 +544,30 @@ export default function AdminPage() {
                     {/* ACTION */}
                     <td className="p-4 flex gap-3">
 
-                      {/* EDIT PAYMENT */}
+                      {/* EDIT */}
                       <button
                         onClick={async () => {
 
                           const paymentInput =
                             prompt(
-                              "Enter New Payment Amount",
-                              "0"
+                              "Enter Paid Amount"
                             );
 
                           if (
-                            !paymentInput
+                            paymentInput ===
+                            null
                           ) return;
 
                           const newPayment =
                             Number(
                               paymentInput
                             );
+
+                          if (
+                            isNaN(
+                              newPayment
+                            )
+                          ) return;
 
                           const updatedPaid =
                             order.paid +
@@ -582,29 +597,28 @@ export default function AdminPage() {
                                       "application/json",
                                   },
 
-                                body: JSON.stringify(
-                                  {
-                                    paid:
-                                      updatedPaid,
+                                body:
+                                  JSON.stringify(
+                                    {
+                                      paid:
+                                        updatedPaid,
 
-                                    remaining:
-                                      updatedRemaining <
-                                      0
-                                        ? 0
-                                        : updatedRemaining,
+                                      remaining:
+                                        updatedRemaining <
+                                        0
+                                          ? 0
+                                          : updatedRemaining,
 
-                                    status:
-                                      updatedStatus,
-                                  }
-                                ),
+                                      status:
+                                        updatedStatus,
+                                    }
+                                  ),
                               }
                             );
 
                             fetchOrders();
 
-                          } catch (
-                            error
-                          ) {
+                          } catch (error) {
 
                             console.log(
                               error
@@ -643,9 +657,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
-      {/* ADD ORDER MODAL */}
-      {/* ========================= */}
+      {/* MODAL */}
       {showModal && (
 
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -705,9 +717,10 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    quantity: Number(
-                      e.target.value
-                    ),
+                    quantity:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
@@ -720,9 +733,10 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    amount: Number(
-                      e.target.value
-                    ),
+                    amount:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
@@ -735,12 +749,24 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    paid: Number(
-                      e.target.value
-                    ),
+                    paid:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
+
+            </div>
+
+            {/* AUTO REMAINING */}
+            <div className="mt-4 text-lg font-semibold text-red-600">
+
+              Remaining:
+              ₹ {
+                formData.amount -
+                formData.paid
+              }
 
             </div>
 
@@ -748,9 +774,14 @@ export default function AdminPage() {
 
               <button
                 onClick={createOrder}
-                className="bg-black text-white px-6 py-3 rounded-xl font-semibold"
+
+                disabled={creating}
+
+                className="bg-black text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50"
               >
-                Save Order
+                {creating
+                  ? "Saving..."
+                  : "Save Order"}
               </button>
 
               <button
