@@ -3,18 +3,21 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
-
 // ==========================
 // UPDATE ORDER STATUS
 // ==========================
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+
     await connectDB();
 
     const body = await req.json();
+
+    // IMPORTANT
+    const params = await context.params;
 
     const updatedOrder = await Order.findByIdAndUpdate(
       params.id,
@@ -31,6 +34,7 @@ export async function PATCH(
     });
 
   } catch (error) {
+
     console.log(error);
 
     return NextResponse.json({
