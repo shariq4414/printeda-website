@@ -131,7 +131,7 @@ export default function AdminPage() {
 
         </div>
 
-        <UserButton afterSignOutUrl="/" />
+        <UserButton />
 
       </div>
 
