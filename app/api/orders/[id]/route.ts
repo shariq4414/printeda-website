@@ -1,28 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
-// ==========================
-// UPDATE ORDER STATUS
-// ==========================
+// =========================
+// UPDATE ORDER
+// =========================
 export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-
     await connectDB();
 
-    // GET BODY
     const body = await req.json();
 
-    // GET ID
-    const { id } = await params;
+    const params = await context.params;
 
-    // UPDATE ORDER
     const updatedOrder = await Order.findByIdAndUpdate(
-      id,
+      params.id,
       body,
       {
         new: true,
@@ -31,22 +27,42 @@ export async function PATCH(
 
     return NextResponse.json({
       success: true,
-      message: "Order Updated Successfully 🚀",
       order: updatedOrder,
     });
-
   } catch (error) {
-
     console.log(error);
 
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to update order",
-      },
-      {
-        status: 500,
-      }
-    );
+    return NextResponse.json({
+      success: false,
+      message: "Update failed",
+    });
+  }
+}
+
+// =========================
+// DELETE ORDER
+// =========================
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
+
+    const params = await context.params;
+
+    await Order.findByIdAndDelete(params.id);
+
+    return NextResponse.json({
+      success: true,
+      message: "Order deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    return NextResponse.json({
+      success: false,
+      message: "Delete failed",
+    });
   }
 }

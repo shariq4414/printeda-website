@@ -3,33 +3,65 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
+// =========================
+// GET ALL ORDERS
+// =========================
+export async function GET() {
+
+  try {
+
+    await connectDB();
+
+    const orders = await Order.find()
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({
+      success: true,
+      totalOrders: orders.length,
+      orders,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to fetch orders",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
 
 // =========================
-// CREATE ORDER
+// CREATE NEW ORDER
 // =========================
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+) {
+
   try {
+
     await connectDB();
 
     const body = await req.json();
 
     const {
+      orderId,
       customerName,
       phone,
       product,
       quantity,
       amount,
       paid,
+      remaining,
+      status,
     } = body;
 
-    // Remaining Amount
-    const remaining = amount - paid;
-
-    // Auto Generate Order ID
-    const orderId =
-      "PRT-" + Math.floor(100000 + Math.random() * 900000);
-
-    // Create Order
     const order = await Order.create({
       orderId,
       customerName,
@@ -39,51 +71,28 @@ export async function POST(req: Request) {
       amount,
       paid,
       remaining,
-      status: "Order Received",
+      status,
     });
 
     return NextResponse.json({
       success: true,
-      message: "Order Created Successfully 🚀",
+      message:
+        "Order Created Successfully 🚀",
       order,
     });
 
   } catch (error) {
-    console.log("POST ERROR:", error);
 
-    return NextResponse.json({
-      success: false,
-      message: "Failed to create order",
-    });
-  }
-}
+    console.log(error);
 
-
-
-// =========================
-// GET ALL ORDERS
-// =========================
-export async function GET() {
-  try {
-    await connectDB();
-
-    // Fetch Orders
-    const orders = await Order.find().sort({
-      createdAt: -1,
-    });
-
-    return NextResponse.json({
-      success: true,
-      totalOrders: orders.length,
-      orders,
-    });
-
-  } catch (error) {
-    console.log("GET ERROR:", error);
-
-    return NextResponse.json({
-      success: false,
-      message: "Failed to fetch orders",
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to create order",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

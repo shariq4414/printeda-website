@@ -34,10 +34,27 @@ export default function AdminPage() {
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [search, setSearch] = useState("");
+
+  const [showModal, setShowModal] =
+    useState(false);
+
+  const [formData, setFormData] = useState({
+    customerName: "",
+    phone: "",
+    product: "",
+    quantity: 1,
+    amount: 0,
+    paid: 0,
+    remaining: 0,
+    status: "Order Received",
+  });
+
   // =========================
   // ADMIN EMAIL
   // =========================
-  const adminEmail = "hello.printeda@gmail.com";
+  const adminEmail =
+    "hello.printeda@gmail.com";
 
   // =========================
   // FETCH ORDERS
@@ -48,21 +65,20 @@ export default function AdminPage() {
 
       setLoading(true);
 
-      const response = await fetch("/api/orders", {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        "/api/orders",
+        {
+          cache: "no-store",
+        }
+      );
 
       const data = await response.json();
 
-      console.log("API DATA:", data);
-
-      if (data.success) {
-        setOrders(data.orders || []);
-      }
+      setOrders(data.orders || []);
 
     } catch (error) {
 
-      console.log("FETCH ERROR:", error);
+      console.log(error);
 
     } finally {
 
@@ -83,29 +99,98 @@ export default function AdminPage() {
   }, [isLoaded, isSignedIn]);
 
   // =========================
-  // LOADING USER
+  // CREATE ORDER
+  // =========================
+  const createOrder = async () => {
+
+    try {
+
+      const orderId =
+        `PRT-${Math.floor(
+          100000 + Math.random() * 900000
+        )}`;
+
+      await fetch("/api/orders", {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          ...formData,
+          orderId,
+        }),
+      });
+
+      setShowModal(false);
+
+      fetchOrders();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  // =========================
+  // DELETE ORDER
+  // =========================
+  const deleteOrder = async (
+    id: string
+  ) => {
+
+    const confirmDelete = confirm(
+      "Delete this order?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await fetch(
+        `/api/orders/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      fetchOrders();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  // =========================
+  // LOADING
   // =========================
   if (!isLoaded) {
 
     return (
-      <div className="min-h-screen flex items-center justify-center text-2xl font-bold">
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
         Loading...
       </div>
     );
   }
 
   // =========================
-  // REDIRECT IF NOT LOGIN
+  // REDIRECT LOGIN
   // =========================
   if (!isSignedIn) {
     return <RedirectToSignIn />;
   }
 
   // =========================
-  // CHECK ADMIN EMAIL
+  // ADMIN CHECK
   // =========================
   if (
-    user?.primaryEmailAddress?.emailAddress !== adminEmail
+    user?.primaryEmailAddress
+      ?.emailAddress !== adminEmail
   ) {
 
     return (
@@ -118,15 +203,29 @@ export default function AdminPage() {
   // =========================
   // TOTALS
   // =========================
-  const totalAmount = orders.reduce(
+  const totalRevenue = orders.reduce(
     (acc, item) => acc + item.amount,
     0
   );
 
-  const totalRemaining = orders.reduce(
-    (acc, item) => acc + item.remaining,
-    0
-  );
+  const totalRemaining =
+    orders.reduce(
+      (acc, item) =>
+        acc + item.remaining,
+      0
+    );
+
+  // =========================
+  // FILTERED ORDERS
+  // =========================
+  const filteredOrders =
+    orders.filter((order) =>
+      order.customerName
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
+    );
 
   return (
 
@@ -140,16 +239,31 @@ export default function AdminPage() {
         <div>
 
           <h1 className="text-4xl font-bold">
-            Printeda Admin Dashboard 🚀
+            Printeda CRM Dashboard 🚀
           </h1>
 
           <p className="text-gray-500 mt-2">
-            Welcome back, {user?.firstName || "Admin"}
+            Welcome back,
+            {" "}
+            {user?.firstName || "Admin"}
           </p>
 
         </div>
 
-        <UserButton />
+        <div className="flex items-center gap-4">
+
+          <button
+            onClick={() =>
+              setShowModal(true)
+            }
+            className="bg-black text-white px-5 py-3 rounded-xl font-semibold"
+          >
+            + Add Order
+          </button>
+
+          <UserButton />
+
+        </div>
 
       </div>
 
@@ -171,7 +285,7 @@ export default function AdminPage() {
 
         </div>
 
-        {/* TOTAL REVENUE */}
+        {/* REVENUE */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -179,7 +293,7 @@ export default function AdminPage() {
           </h2>
 
           <p className="text-3xl font-bold text-green-600">
-            ₹ {totalAmount}
+            ₹ {totalRevenue}
           </p>
 
         </div>
@@ -200,13 +314,29 @@ export default function AdminPage() {
       </div>
 
       {/* ========================= */}
+      {/* SEARCH */}
+      {/* ========================= */}
+      <div className="bg-white p-4 rounded-2xl shadow-lg mb-6">
+
+        <input
+          type="text"
+          placeholder="Search customer..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="w-full border p-4 rounded-xl"
+        />
+
+      </div>
+
+      {/* ========================= */}
       {/* TABLE */}
       {/* ========================= */}
       <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
 
         <table className="w-full">
 
-          {/* TABLE HEAD */}
           <thead className="bg-black text-white">
 
             <tr>
@@ -239,11 +369,14 @@ export default function AdminPage() {
                 Status
               </th>
 
+              <th className="p-4 text-left">
+                Action
+              </th>
+
             </tr>
 
           </thead>
 
-          {/* TABLE BODY */}
           <tbody>
 
             {loading ? (
@@ -252,20 +385,21 @@ export default function AdminPage() {
 
                 <td
                   className="p-4"
-                  colSpan={7}
+                  colSpan={8}
                 >
                   Loading...
                 </td>
 
               </tr>
 
-            ) : orders.length === 0 ? (
+            ) : filteredOrders.length ===
+              0 ? (
 
               <tr>
 
                 <td
                   className="p-4"
-                  colSpan={7}
+                  colSpan={8}
                 >
                   No Orders Found
                 </td>
@@ -274,114 +408,138 @@ export default function AdminPage() {
 
             ) : (
 
-              orders.map((order) => (
+              filteredOrders.map(
+                (order) => (
 
-                <tr
-                  key={order._id}
-                  className="border-b hover:bg-gray-100"
-                >
+                  <tr
+                    key={order._id}
+                    className="border-b hover:bg-gray-100"
+                  >
 
-                  {/* ORDER ID */}
-                  <td className="p-4 font-semibold">
-                    {order.orderId}
-                  </td>
+                    <td className="p-4 font-semibold">
+                      {order.orderId}
+                    </td>
 
-                  {/* CUSTOMER */}
-                  <td className="p-4">
-                    {order.customerName}
-                  </td>
+                    <td className="p-4">
+                      {order.customerName}
+                    </td>
 
-                  {/* PRODUCT */}
-                  <td className="p-4">
-                    {order.product}
-                  </td>
+                    <td className="p-4">
+                      {order.product}
+                    </td>
 
-                  {/* AMOUNT */}
-                  <td className="p-4 font-semibold">
-                    ₹ {order.amount}
-                  </td>
+                    <td className="p-4 font-semibold">
+                      ₹ {order.amount}
+                    </td>
 
-                  {/* PAID */}
-                  <td className="p-4 text-green-600 font-semibold">
-                    ₹ {order.paid}
-                  </td>
+                    <td className="p-4 text-green-600 font-semibold">
+                      ₹ {order.paid}
+                    </td>
 
-                  {/* REMAINING */}
-                  <td className="p-4 text-red-600 font-semibold">
-                    ₹ {order.remaining}
-                  </td>
+                    <td className="p-4 text-red-600 font-semibold">
+                      ₹ {order.remaining}
+                    </td>
 
-                  {/* STATUS */}
-                  <td className="p-4">
+                    <td className="p-4">
 
-                    <select
-                      value={order.status}
-
-                      onChange={async (e) => {
-
-                        const newStatus = e.target.value;
-
-                        try {
-
-                          await fetch(
-                            `/api/orders/${order._id}`,
-                            {
-                              method: "PATCH",
-
-                              headers: {
-                                "Content-Type":
-                                  "application/json",
-                              },
-
-                              body: JSON.stringify({
-                                status: newStatus,
-                              }),
-                            }
-                          );
-
-                          fetchOrders();
-
-                        } catch (error) {
-
-                          console.log(error);
-
+                      <select
+                        value={
+                          order.status
                         }
-                      }}
 
-                      className="border p-2 rounded-lg"
-                    >
+                        onChange={async (
+                          e
+                        ) => {
 
-                      <option>
-                        Order Received
-                      </option>
+                          const newStatus =
+                            e.target
+                              .value;
 
-                      <option>
-                        Designing
-                      </option>
+                          try {
 
-                      <option>
-                        Printing
-                      </option>
+                            await fetch(
+                              `/api/orders/${order._id}`,
+                              {
+                                method:
+                                  "PATCH",
 
-                      <option>
-                        Packaging
-                      </option>
+                                headers:
+                                  {
+                                    "Content-Type":
+                                      "application/json",
+                                  },
 
-                      <option>
-                        Ready
-                      </option>
+                                body: JSON.stringify(
+                                  {
+                                    status:
+                                      newStatus,
+                                  }
+                                ),
+                              }
+                            );
 
-                      <option>
-                        Completed
-                      </option>
+                            fetchOrders();
 
-                    </select>
+                          } catch (
+                            error
+                          ) {
 
-                  </td>
+                            console.log(
+                              error
+                            );
 
-                </tr>
+                          }
+                        }}
 
-              ))
+                        className="border p-2 rounded-lg"
+                      >
+
+                        <option>
+                          Order Received
+                        </option>
+
+                        <option>
+                          Designing
+                        </option>
+
+                        <option>
+                          Printing
+                        </option>
+
+                        <option>
+                          Packaging
+                        </option>
+
+                        <option>
+                          Ready
+                        </option>
+
+                        <option>
+                          Completed
+                        </option>
+
+                      </select>
+
+                    </td>
+
+                    <td className="p-4">
+
+                      <button
+                        onClick={() =>
+                          deleteOrder(
+                            order._id
+                          )
+                        }
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                      >
+                        Delete
+                      </button>
+
+                    </td>
+
+                  </tr>
+                )
+              )
             )}
 
           </tbody>
@@ -389,6 +547,141 @@ export default function AdminPage() {
         </table>
 
       </div>
+
+      {/* ========================= */}
+      {/* MODAL */}
+      {/* ========================= */}
+      {showModal && (
+
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+          <div className="bg-white p-8 rounded-2xl w-full max-w-xl">
+
+            <h2 className="text-3xl font-bold mb-6">
+              Add New Order
+            </h2>
+
+            <div className="grid grid-cols-1 gap-4">
+
+              <input
+                placeholder="Customer Name"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    customerName:
+                      e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Phone"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    phone:
+                      e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Product"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    product:
+                      e.target.value,
+                  })
+                }
+              />
+
+              <input
+                type="number"
+                placeholder="Quantity"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    quantity: Number(
+                      e.target.value
+                    ),
+                  })
+                }
+              />
+
+              <input
+                type="number"
+                placeholder="Amount"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    amount: Number(
+                      e.target.value
+                    ),
+                  })
+                }
+              />
+
+              <input
+                type="number"
+                placeholder="Paid"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    paid: Number(
+                      e.target.value
+                    ),
+                  })
+                }
+              />
+
+              <input
+                type="number"
+                placeholder="Remaining"
+                className="border p-3 rounded-xl"
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    remaining:
+                      Number(
+                        e.target.value
+                      ),
+                  })
+                }
+              />
+
+            </div>
+
+            <div className="flex gap-4 mt-6">
+
+              <button
+                onClick={createOrder}
+                className="bg-black text-white px-6 py-3 rounded-xl font-semibold"
+              >
+                Save Order
+              </button>
+
+              <button
+                onClick={() =>
+                  setShowModal(false)
+                }
+                className="bg-gray-300 px-6 py-3 rounded-xl font-semibold"
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
 
     </div>
   );
