@@ -92,7 +92,7 @@ export default function AdminPage() {
   };
 
   // =========================
-  // LOAD DATA
+  // LOAD ORDERS
   // =========================
   useEffect(() => {
 
@@ -241,6 +241,13 @@ export default function AdminPage() {
       0
     );
 
+  const totalPaid =
+    orders.reduce(
+      (acc, item) =>
+        acc + item.paid,
+      0
+    );
+
   const totalRemaining =
     orders.reduce(
       (acc, item) =>
@@ -264,7 +271,9 @@ export default function AdminPage() {
 
     <div className="min-h-screen bg-gray-100 p-6">
 
-      {/* TOP */}
+      {/* ========================= */}
+      {/* TOP BAR */}
+      {/* ========================= */}
       <div className="flex items-center justify-between mb-8">
 
         <div>
@@ -298,9 +307,12 @@ export default function AdminPage() {
 
       </div>
 
+      {/* ========================= */}
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* ========================= */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
+        {/* TOTAL ORDERS */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -313,6 +325,7 @@ export default function AdminPage() {
 
         </div>
 
+        {/* TOTAL REVENUE */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -325,6 +338,20 @@ export default function AdminPage() {
 
         </div>
 
+        {/* RECEIVED PAYMENT */}
+        <div className="bg-white p-6 rounded-2xl shadow-lg">
+
+          <h2 className="text-xl font-semibold mb-2">
+            Received Payment
+          </h2>
+
+          <p className="text-3xl font-bold text-blue-500">
+            ₹ {totalPaid}
+          </p>
+
+        </div>
+
+        {/* REMAINING */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -339,7 +366,9 @@ export default function AdminPage() {
 
       </div>
 
+      {/* ========================= */}
       {/* SEARCH */}
+      {/* ========================= */}
       <div className="bg-white p-4 rounded-2xl shadow-lg mb-6">
 
         <input
@@ -354,7 +383,9 @@ export default function AdminPage() {
 
       </div>
 
+      {/* ========================= */}
       {/* TABLE */}
+      {/* ========================= */}
       <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
 
         <table className="w-full">
@@ -657,7 +688,9 @@ export default function AdminPage() {
 
       </div>
 
-      {/* MODAL */}
+      {/* ========================= */}
+      {/* ADD ORDER MODAL */}
+      {/* ========================= */}
       {showModal && (
 
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
