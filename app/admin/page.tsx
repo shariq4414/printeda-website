@@ -271,9 +271,7 @@ export default function AdminPage() {
 
     <div className="min-h-screen bg-gray-100 p-6">
 
-      {/* ========================= */}
       {/* TOP BAR */}
-      {/* ========================= */}
       <div className="flex items-center justify-between mb-8">
 
         <div>
@@ -307,12 +305,9 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* STATS */}
-      {/* ========================= */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
-        {/* TOTAL ORDERS */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -325,7 +320,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* TOTAL REVENUE */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -338,7 +332,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* RECEIVED PAYMENT */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -351,7 +344,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* REMAINING */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -366,9 +358,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* SEARCH */}
-      {/* ========================= */}
       <div className="bg-white p-4 rounded-2xl shadow-lg mb-6">
 
         <input
@@ -383,9 +373,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* TABLE */}
-      {/* ========================= */}
       <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
 
         <table className="w-full">
@@ -663,6 +651,44 @@ export default function AdminPage() {
                         Edit
                       </button>
 
+                      {/* WHATSAPP */}
+                      <a
+                        href={`https://wa.me/91${order.phone}?text=${encodeURIComponent(
+`Hello ${order.customerName} 👋
+
+Your order update from Printeda ✅
+
+🆔 Order ID:
+${order.orderId}
+
+🖨 Product:
+${order.product}
+
+📦 Current Status:
+${order.status}
+
+💰 Total Amount:
+₹${order.amount}
+
+💵 Paid:
+₹${order.paid}
+
+⏳ Remaining:
+₹${order.remaining}
+
+Track Your Order:
+https://printeda.in/track
+
+Thank you ❤️`
+                        )}`}
+
+                        target="_blank"
+
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                      >
+                        WhatsApp
+                      </a>
+
                       {/* DELETE */}
                       <button
                         onClick={() =>
@@ -688,9 +714,7 @@ export default function AdminPage() {
 
       </div>
 
-      {/* ========================= */}
       {/* ADD ORDER MODAL */}
-      {/* ========================= */}
       {showModal && (
 
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
