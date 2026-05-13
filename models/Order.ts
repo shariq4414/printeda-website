@@ -48,7 +48,9 @@ const OrderSchema = new mongoose.Schema(
       default: "Order Received",
     },
 
-    // DESIGN IMAGE
+    // =========================
+    // DESIGN FILE
+    // =========================
     design: {
       type: String,
       default: "",
