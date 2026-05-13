@@ -26,7 +26,7 @@ export default function AdminPage() {
   // =========================
   // CLERK AUTH
   // =========================
-  const { isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
 
   // =========================
   // STATES
@@ -46,15 +46,23 @@ export default function AdminPage() {
 
     try {
 
-      const response = await fetch("/api/orders");
+      setLoading(true);
+
+      const response = await fetch("/api/orders", {
+        cache: "no-store",
+      });
 
       const data = await response.json();
 
-      setOrders(data.orders || []);
+      console.log("API DATA:", data);
+
+      if (data.success) {
+        setOrders(data.orders || []);
+      }
 
     } catch (error) {
 
-      console.log(error);
+      console.log("FETCH ERROR:", error);
 
     } finally {
 
@@ -68,16 +76,28 @@ export default function AdminPage() {
   // =========================
   useEffect(() => {
 
-    if (isSignedIn) {
+    if (isLoaded && isSignedIn) {
       fetchOrders();
     }
 
-  }, [isSignedIn]);
+  }, [isLoaded, isSignedIn]);
+
+  // =========================
+  // LOADING USER
+  // =========================
+  if (!isLoaded) {
+
+    return (
+      <div className="min-h-screen flex items-center justify-center text-2xl font-bold">
+        Loading...
+      </div>
+    );
+  }
 
   // =========================
   // REDIRECT IF NOT LOGIN
   // =========================
-  if (isSignedIn === false) {
+  if (!isSignedIn) {
     return <RedirectToSignIn />;
   }
 
@@ -85,9 +105,9 @@ export default function AdminPage() {
   // CHECK ADMIN EMAIL
   // =========================
   if (
-    isSignedIn &&
     user?.primaryEmailAddress?.emailAddress !== adminEmail
   ) {
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white text-4xl font-bold">
         Access Denied ❌
@@ -124,9 +144,7 @@ export default function AdminPage() {
           </h1>
 
           <p className="text-gray-500 mt-2">
-            Welcome back,
-            {" "}
-            {user?.firstName || "Admin"}
+            Welcome back, {user?.firstName || "Admin"}
           </p>
 
         </div>
