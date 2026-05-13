@@ -8,6 +8,8 @@ import {
   useUser,
 } from "@clerk/nextjs";
 
+import { CldUploadWidget } from "next-cloudinary";
+
 interface OrderType {
   _id: string;
   orderId: string;
@@ -19,6 +21,7 @@ interface OrderType {
   paid: number;
   remaining: number;
   status: string;
+  design?: string;
 }
 
 export default function AdminPage() {
@@ -51,6 +54,7 @@ export default function AdminPage() {
       paid: 0,
       remaining: 0,
       status: "Order Received",
+      design: "",
     });
 
   // =========================
@@ -150,6 +154,7 @@ export default function AdminPage() {
         paid: 0,
         remaining: 0,
         status: "Order Received",
+        design: "",
       });
 
       fetchOrders();
@@ -277,7 +282,7 @@ export default function AdminPage() {
         <div>
 
           <h1 className="text-4xl font-bold">
-            Printeda CRM Dashboard 🚀
+            Printeda Dashboard 
           </h1>
 
           <p className="text-gray-500 mt-2">
@@ -395,6 +400,10 @@ export default function AdminPage() {
               </th>
 
               <th className="p-4 text-left">
+                Design
+              </th>
+
+              <th className="p-4 text-left">
                 Amount
               </th>
 
@@ -420,291 +429,84 @@ export default function AdminPage() {
 
           <tbody>
 
-            {loading ? (
+            {filteredOrders.map(
+              (order) => (
 
-              <tr>
-
-                <td
-                  className="p-4"
-                  colSpan={8}
+                <tr
+                  key={order._id}
+                  className="border-b"
                 >
-                  Loading...
-                </td>
 
-              </tr>
+                  <td className="p-4">
+                    {order.orderId}
+                  </td>
 
-            ) : filteredOrders.length ===
-              0 ? (
+                  <td className="p-4">
+                    {order.customerName}
+                  </td>
 
-              <tr>
+                  <td className="p-4">
+                    {order.product}
+                  </td>
 
-                <td
-                  className="p-4"
-                  colSpan={8}
-                >
-                  No Orders Found
-                </td>
+                  <td className="p-4">
 
-              </tr>
+                    {order.design ? (
 
-            ) : (
-
-              filteredOrders.map(
-                (order) => (
-
-                  <tr
-                    key={order._id}
-                    className="border-b hover:bg-gray-100"
-                  >
-
-                    <td className="p-4 font-semibold">
-                      {order.orderId}
-                    </td>
-
-                    <td className="p-4">
-                      {order.customerName}
-                    </td>
-
-                    <td className="p-4">
-                      {order.product}
-                    </td>
-
-                    <td className="p-4 font-semibold">
-                      ₹ {order.amount}
-                    </td>
-
-                    <td className="p-4 text-green-600 font-semibold">
-                      ₹ {order.paid}
-                    </td>
-
-                    <td className="p-4 text-red-600 font-semibold">
-                      ₹ {order.remaining}
-                    </td>
-
-                    {/* STATUS */}
-                    <td className="p-4">
-
-                      <select
-                        value={order.status}
-
-                        onChange={async (
-                          e
-                        ) => {
-
-                          const newStatus =
-                            e.target.value;
-
-                          try {
-
-                            await fetch(
-                              `/api/orders/${order._id}`,
-                              {
-                                method:
-                                  "PATCH",
-
-                                headers:
-                                  {
-                                    "Content-Type":
-                                      "application/json",
-                                  },
-
-                                body:
-                                  JSON.stringify(
-                                    {
-                                      status:
-                                        newStatus,
-                                    }
-                                  ),
-                              }
-                            );
-
-                            fetchOrders();
-
-                          } catch (error) {
-
-                            console.log(
-                              error
-                            );
-
-                          }
-                        }}
-
-                        className="border p-2 rounded-lg"
-                      >
-
-                        <option>
-                          Order Received
-                        </option>
-
-                        <option>
-                          Designing
-                        </option>
-
-                        <option>
-                          Printing
-                        </option>
-
-                        <option>
-                          Packaging
-                        </option>
-
-                        <option>
-                          Ready
-                        </option>
-
-                        <option>
-                          Completed
-                        </option>
-
-                      </select>
-
-                    </td>
-
-                    {/* ACTION */}
-                    <td className="p-4 flex gap-3">
-
-                      {/* EDIT */}
-                      <button
-                        onClick={async () => {
-
-                          const paymentInput =
-                            prompt(
-                              "Enter Paid Amount"
-                            );
-
-                          if (
-                            paymentInput ===
-                            null
-                          ) return;
-
-                          const newPayment =
-                            Number(
-                              paymentInput
-                            );
-
-                          if (
-                            isNaN(
-                              newPayment
-                            )
-                          ) return;
-
-                          const updatedPaid =
-                            order.paid +
-                            newPayment;
-
-                          const updatedRemaining =
-                            order.amount -
-                            updatedPaid;
-
-                          const updatedStatus =
-                            updatedRemaining <=
-                            0
-                              ? "Completed"
-                              : order.status;
-
-                          try {
-
-                            await fetch(
-                              `/api/orders/${order._id}`,
-                              {
-                                method:
-                                  "PATCH",
-
-                                headers:
-                                  {
-                                    "Content-Type":
-                                      "application/json",
-                                  },
-
-                                body:
-                                  JSON.stringify(
-                                    {
-                                      paid:
-                                        updatedPaid,
-
-                                      remaining:
-                                        updatedRemaining <
-                                        0
-                                          ? 0
-                                          : updatedRemaining,
-
-                                      status:
-                                        updatedStatus,
-                                    }
-                                  ),
-                              }
-                            );
-
-                            fetchOrders();
-
-                          } catch (error) {
-
-                            console.log(
-                              error
-                            );
-
-                          }
-                        }}
-
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                      >
-                        Edit
-                      </button>
-
-                      {/* WHATSAPP */}
                       <a
-                        href={`https://wa.me/91${order.phone}?text=${encodeURIComponent(
-`Hello ${order.customerName} 👋
-
-Your order update from Printeda ✅
-
-🆔 Order ID:
-${order.orderId}
-
-🖨 Product:
-${order.product}
-
-📦 Current Status:
-${order.status}
-
-💰 Total Amount:
-₹${order.amount}
-
-💵 Paid:
-₹${order.paid}
-
-⏳ Remaining:
-₹${order.remaining}
-
-Track Your Order:
-https://printeda.in/track
-
-Thank you ❤️`
-                        )}`}
-
+                        href={order.design}
                         target="_blank"
-
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                        className="text-blue-600 underline"
                       >
-                        WhatsApp
+                        View
                       </a>
 
-                      {/* DELETE */}
-                      <button
-                        onClick={() =>
-                          deleteOrder(
-                            order._id
-                          )
-                        }
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg"
-                      >
-                        Delete
-                      </button>
+                    ) : (
+                      "No Design"
+                    )}
 
-                    </td>
+                  </td>
 
-                  </tr>
-                )
+                  <td className="p-4">
+                    ₹ {order.amount}
+                  </td>
+
+                  <td className="p-4 text-green-600">
+                    ₹ {order.paid}
+                  </td>
+
+                  <td className="p-4 text-red-600">
+                    ₹ {order.remaining}
+                  </td>
+
+                  <td className="p-4">
+                    {order.status}
+                  </td>
+
+                  <td className="p-4 flex gap-2">
+
+                    <a
+                      href={`https://wa.me/91${order.phone}`}
+                      target="_blank"
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      WhatsApp
+                    </a>
+
+                    <button
+                      onClick={() =>
+                        deleteOrder(
+                          order._id
+                        )
+                      }
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
               )
             )}
 
@@ -714,7 +516,7 @@ Thank you ❤️`
 
       </div>
 
-      {/* ADD ORDER MODAL */}
+      {/* MODAL */}
       {showModal && (
 
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -814,9 +616,65 @@ Thank you ❤️`
                 }
               />
 
+              {/* DESIGN UPLOAD */}
+              <div>
+
+                <label className="font-semibold">
+                  Upload Design
+                </label>
+
+                <div className="mt-2">
+
+                  <CldUploadWidget
+                    uploadPreset="printeda"
+
+                    onSuccess={(result: any) => {
+
+                      setFormData({
+                        ...formData,
+                        design:
+                          result.info.secure_url,
+                      });
+
+                    }}
+                  >
+
+                    {({ open }) => {
+
+                      return (
+
+                        <button
+                          type="button"
+
+                          onClick={() =>
+                            open()
+                          }
+
+                          className="bg-blue-600 text-white px-5 py-3 rounded-xl"
+                        >
+                          Upload Design
+                        </button>
+                      );
+                    }}
+
+                  </CldUploadWidget>
+
+                </div>
+
+                {formData.design && (
+
+                  <img
+                    src={formData.design}
+                    alt="design"
+                    className="w-32 h-32 object-cover rounded-xl mt-4 border"
+                  />
+
+                )}
+
+              </div>
+
             </div>
 
-            {/* AUTO REMAINING */}
             <div className="mt-4 text-lg font-semibold text-red-600">
 
               Remaining:
@@ -834,7 +692,7 @@ Thank you ❤️`
 
                 disabled={creating}
 
-                className="bg-black text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50"
+                className="bg-black text-white px-6 py-3 rounded-xl font-semibold"
               >
                 {creating
                   ? "Saving..."

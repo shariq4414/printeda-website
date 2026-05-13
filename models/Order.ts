@@ -47,6 +47,12 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       default: "Order Received",
     },
+
+    // DESIGN IMAGE
+    design: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
