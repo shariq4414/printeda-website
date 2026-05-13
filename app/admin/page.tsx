@@ -24,37 +24,31 @@ interface OrderType {
 export default function AdminPage() {
 
   // =========================
-  // AUTH
+  // CLERK AUTH
   // =========================
-  const { isLoaded, isSignedIn, user } =
-    useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
 
   // =========================
   // STATES
   // =========================
-  const [orders, setOrders] =
-    useState<OrderType[]>([]);
+  const [orders, setOrders] = useState<OrderType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [search, setSearch] =
-    useState("");
+  const [search, setSearch] = useState("");
 
   const [showModal, setShowModal] =
     useState(false);
 
-  const [formData, setFormData] =
-    useState({
-      customerName: "",
-      phone: "",
-      product: "",
-      quantity: 1,
-      amount: 0,
-      paid: 0,
-      remaining: 0,
-      status: "Order Received",
-    });
+  const [formData, setFormData] = useState({
+    customerName: "",
+    phone: "",
+    product: "",
+    quantity: 1,
+    amount: 0,
+    paid: 0,
+    remaining: 0,
+    status: "Order Received",
+  });
 
   // =========================
   // ADMIN EMAIL
@@ -116,6 +110,9 @@ export default function AdminPage() {
           100000 + Math.random() * 900000
         )}`;
 
+      const remaining =
+        formData.amount - formData.paid;
+
       await fetch("/api/orders", {
         method: "POST",
 
@@ -127,6 +124,7 @@ export default function AdminPage() {
         body: JSON.stringify({
           ...formData,
           orderId,
+          remaining,
         }),
       });
 
@@ -196,7 +194,7 @@ export default function AdminPage() {
   }
 
   // =========================
-  // LOGIN CHECK
+  // REDIRECT LOGIN
   // =========================
   if (!isSignedIn) {
     return <RedirectToSignIn />;
@@ -220,12 +218,10 @@ export default function AdminPage() {
   // =========================
   // TOTALS
   // =========================
-  const totalRevenue =
-    orders.reduce(
-      (acc, item) =>
-        acc + item.amount,
-      0
-    );
+  const totalRevenue = orders.reduce(
+    (acc, item) => acc + item.amount,
+    0
+  );
 
   const totalRemaining =
     orders.reduce(
@@ -235,7 +231,7 @@ export default function AdminPage() {
     );
 
   // =========================
-  // FILTER SEARCH
+  // FILTERED ORDERS
   // =========================
   const filteredOrders =
     orders.filter((order) =>
@@ -456,6 +452,7 @@ export default function AdminPage() {
                       ₹ {order.remaining}
                     </td>
 
+                    {/* STATUS */}
                     <td className="p-4">
 
                       <select
@@ -466,8 +463,7 @@ export default function AdminPage() {
                         ) => {
 
                           const newStatus =
-                            e.target
-                              .value;
+                            e.target.value;
 
                           try {
 
@@ -536,36 +532,39 @@ export default function AdminPage() {
 
                     </td>
 
-                    {/* ACTIONS */}
-                    <td className="p-4 flex gap-2">
+                    {/* ACTION */}
+                    <td className="p-4 flex gap-3">
 
-                      {/* EDIT */}
+                      {/* EDIT PAYMENT */}
                       <button
                         onClick={async () => {
 
-                          const paidInput =
+                          const paymentInput =
                             prompt(
-                              "Enter Paid Amount",
-                              String(
-                                order.paid
-                              )
+                              "Enter New Payment Amount",
+                              "0"
                             );
 
                           if (
-                            !paidInput
+                            !paymentInput
                           ) return;
 
-                          const newPaid =
+                          const newPayment =
                             Number(
-                              paidInput
+                              paymentInput
                             );
 
-                          const remaining =
-                            order.amount -
-                            newPaid;
+                          const updatedPaid =
+                            order.paid +
+                            newPayment;
 
-                          const newStatus =
-                            remaining <= 0
+                          const updatedRemaining =
+                            order.amount -
+                            updatedPaid;
+
+                          const updatedStatus =
+                            updatedRemaining <=
+                            0
                               ? "Completed"
                               : order.status;
 
@@ -586,16 +585,16 @@ export default function AdminPage() {
                                 body: JSON.stringify(
                                   {
                                     paid:
-                                      newPaid,
+                                      updatedPaid,
 
                                     remaining:
-                                      remaining <
+                                      updatedRemaining <
                                       0
                                         ? 0
-                                        : remaining,
+                                        : updatedRemaining,
 
                                     status:
-                                      newStatus,
+                                      updatedStatus,
                                   }
                                 ),
                               }
@@ -626,7 +625,6 @@ export default function AdminPage() {
                             order._id
                           )
                         }
-
                         className="bg-red-600 text-white px-4 py-2 rounded-lg"
                       >
                         Delete
@@ -707,10 +705,9 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    quantity:
-                      Number(
-                        e.target.value
-                      ),
+                    quantity: Number(
+                      e.target.value
+                    ),
                   })
                 }
               />
@@ -723,10 +720,9 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    amount:
-                      Number(
-                        e.target.value
-                      ),
+                    amount: Number(
+                      e.target.value
+                    ),
                   })
                 }
               />
@@ -739,26 +735,9 @@ export default function AdminPage() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    paid:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Remaining"
-                className="border p-3 rounded-xl"
-
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    remaining:
-                      Number(
-                        e.target.value
-                      ),
+                    paid: Number(
+                      e.target.value
+                    ),
                   })
                 }
               />
@@ -778,7 +757,6 @@ export default function AdminPage() {
                 onClick={() =>
                   setShowModal(false)
                 }
-
                 className="bg-gray-300 px-6 py-3 rounded-xl font-semibold"
               >
                 Cancel
