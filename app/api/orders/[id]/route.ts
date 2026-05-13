@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
@@ -7,20 +7,22 @@ import Order from "@/models/Order";
 // UPDATE ORDER STATUS
 // ==========================
 export async function PATCH(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
 
     await connectDB();
 
+    // GET BODY
     const body = await req.json();
 
-    // IMPORTANT
-    const params = await context.params;
+    // GET ID
+    const { id } = await params;
 
+    // UPDATE ORDER
     const updatedOrder = await Order.findByIdAndUpdate(
-      params.id,
+      id,
       body,
       {
         new: true,
@@ -37,9 +39,14 @@ export async function PATCH(
 
     console.log(error);
 
-    return NextResponse.json({
-      success: false,
-      message: "Failed to update order",
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to update order",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }
