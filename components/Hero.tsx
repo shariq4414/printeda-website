@@ -19,7 +19,7 @@ export default function Hero() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-xs font-bold uppercase mb-6">
             <span className="h-2 w-2 bg-blue-600 rounded-full animate-pulse"></span>
-            Since 2009 • Formerly Anwar Computer
+            POWERED BY ANWAR COMPUTER • SINCE 2009
           </div>
 
           {/* Heading */}

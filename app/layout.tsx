@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+
 import WhatsAppButton from "@/components/WhatsAppButton";
 import FloatingCallButton from "@/components/FloatingCallButton";
+
 import { Inter } from "next/font/google";
+
+import {
+  ClerkProvider,
+} from "@clerk/nextjs";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -67,19 +74,31 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
-    <html lang="en-IN">
-      <body className={`${inter.className} min-h-full flex flex-col`}>
-        
-        <div className="flex-1 pb-20">
-          {children}
-        </div>
 
-        {/* Floating Buttons */}
-        <FloatingCallButton />
-        <WhatsAppButton />
+    <ClerkProvider>
 
-      </body>
-    </html>
+      <html lang="en-IN">
+
+        <body
+          className={`${inter.className} min-h-full flex flex-col`}
+        >
+
+          <div className="flex-1 pb-20">
+
+            {children}
+
+          </div>
+
+          {/* Floating Buttons */}
+          <FloatingCallButton />
+          <WhatsAppButton />
+
+        </body>
+
+      </html>
+
+    </ClerkProvider>
   );
 }
