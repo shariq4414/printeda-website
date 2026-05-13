@@ -24,31 +24,37 @@ interface OrderType {
 export default function AdminPage() {
 
   // =========================
-  // CLERK AUTH
+  // AUTH
   // =========================
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, user } =
+    useUser();
 
   // =========================
   // STATES
   // =========================
-  const [orders, setOrders] = useState<OrderType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] =
+    useState<OrderType[]>([]);
 
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] =
+    useState(true);
+
+  const [search, setSearch] =
+    useState("");
 
   const [showModal, setShowModal] =
     useState(false);
 
-  const [formData, setFormData] = useState({
-    customerName: "",
-    phone: "",
-    product: "",
-    quantity: 1,
-    amount: 0,
-    paid: 0,
-    remaining: 0,
-    status: "Order Received",
-  });
+  const [formData, setFormData] =
+    useState({
+      customerName: "",
+      phone: "",
+      product: "",
+      quantity: 1,
+      amount: 0,
+      paid: 0,
+      remaining: 0,
+      status: "Order Received",
+    });
 
   // =========================
   // ADMIN EMAIL
@@ -126,6 +132,17 @@ export default function AdminPage() {
 
       setShowModal(false);
 
+      setFormData({
+        customerName: "",
+        phone: "",
+        product: "",
+        quantity: 1,
+        amount: 0,
+        paid: 0,
+        remaining: 0,
+        status: "Order Received",
+      });
+
       fetchOrders();
 
     } catch (error) {
@@ -179,7 +196,7 @@ export default function AdminPage() {
   }
 
   // =========================
-  // REDIRECT LOGIN
+  // LOGIN CHECK
   // =========================
   if (!isSignedIn) {
     return <RedirectToSignIn />;
@@ -203,10 +220,12 @@ export default function AdminPage() {
   // =========================
   // TOTALS
   // =========================
-  const totalRevenue = orders.reduce(
-    (acc, item) => acc + item.amount,
-    0
-  );
+  const totalRevenue =
+    orders.reduce(
+      (acc, item) =>
+        acc + item.amount,
+      0
+    );
 
   const totalRemaining =
     orders.reduce(
@@ -216,7 +235,7 @@ export default function AdminPage() {
     );
 
   // =========================
-  // FILTERED ORDERS
+  // FILTER SEARCH
   // =========================
   const filteredOrders =
     orders.filter((order) =>
@@ -272,7 +291,6 @@ export default function AdminPage() {
       {/* ========================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-        {/* TOTAL ORDERS */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -285,7 +303,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* REVENUE */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -298,7 +315,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* REMAINING */}
         <div className="bg-white p-6 rounded-2xl shadow-lg">
 
           <h2 className="text-xl font-semibold mb-2">
@@ -443,9 +459,7 @@ export default function AdminPage() {
                     <td className="p-4">
 
                       <select
-                        value={
-                          order.status
-                        }
+                        value={order.status}
 
                         onChange={async (
                           e
@@ -522,14 +536,97 @@ export default function AdminPage() {
 
                     </td>
 
-                    <td className="p-4">
+                    {/* ACTIONS */}
+                    <td className="p-4 flex gap-2">
 
+                      {/* EDIT */}
+                      <button
+                        onClick={async () => {
+
+                          const paidInput =
+                            prompt(
+                              "Enter Paid Amount",
+                              String(
+                                order.paid
+                              )
+                            );
+
+                          if (
+                            !paidInput
+                          ) return;
+
+                          const newPaid =
+                            Number(
+                              paidInput
+                            );
+
+                          const remaining =
+                            order.amount -
+                            newPaid;
+
+                          const newStatus =
+                            remaining <= 0
+                              ? "Completed"
+                              : order.status;
+
+                          try {
+
+                            await fetch(
+                              `/api/orders/${order._id}`,
+                              {
+                                method:
+                                  "PATCH",
+
+                                headers:
+                                  {
+                                    "Content-Type":
+                                      "application/json",
+                                  },
+
+                                body: JSON.stringify(
+                                  {
+                                    paid:
+                                      newPaid,
+
+                                    remaining:
+                                      remaining <
+                                      0
+                                        ? 0
+                                        : remaining,
+
+                                    status:
+                                      newStatus,
+                                  }
+                                ),
+                              }
+                            );
+
+                            fetchOrders();
+
+                          } catch (
+                            error
+                          ) {
+
+                            console.log(
+                              error
+                            );
+
+                          }
+                        }}
+
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                      >
+                        Edit
+                      </button>
+
+                      {/* DELETE */}
                       <button
                         onClick={() =>
                           deleteOrder(
                             order._id
                           )
                         }
+
                         className="bg-red-600 text-white px-4 py-2 rounded-lg"
                       >
                         Delete
@@ -549,7 +646,7 @@ export default function AdminPage() {
       </div>
 
       {/* ========================= */}
-      {/* MODAL */}
+      {/* ADD ORDER MODAL */}
       {/* ========================= */}
       {showModal && (
 
@@ -566,6 +663,7 @@ export default function AdminPage() {
               <input
                 placeholder="Customer Name"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -578,6 +676,7 @@ export default function AdminPage() {
               <input
                 placeholder="Phone"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -590,6 +689,7 @@ export default function AdminPage() {
               <input
                 placeholder="Product"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -603,12 +703,14 @@ export default function AdminPage() {
                 type="number"
                 placeholder="Quantity"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    quantity: Number(
-                      e.target.value
-                    ),
+                    quantity:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
@@ -617,12 +719,14 @@ export default function AdminPage() {
                 type="number"
                 placeholder="Amount"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    amount: Number(
-                      e.target.value
-                    ),
+                    amount:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
@@ -631,12 +735,14 @@ export default function AdminPage() {
                 type="number"
                 placeholder="Paid"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    paid: Number(
-                      e.target.value
-                    ),
+                    paid:
+                      Number(
+                        e.target.value
+                      ),
                   })
                 }
               />
@@ -645,6 +751,7 @@ export default function AdminPage() {
                 type="number"
                 placeholder="Remaining"
                 className="border p-3 rounded-xl"
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -671,6 +778,7 @@ export default function AdminPage() {
                 onClick={() =>
                   setShowModal(false)
                 }
+
                 className="bg-gray-300 px-6 py-3 rounded-xl font-semibold"
               >
                 Cancel
