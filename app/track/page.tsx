@@ -66,7 +66,7 @@ export default function TrackPage() {
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-center px-6 py-10">
 
             <h1 className="text-4xl font-black tracking-tight">
-              Shipment Track
+              Track You Order
             </h1>
 
             <p className="mt-3 text-white/80">
