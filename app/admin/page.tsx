@@ -213,70 +213,79 @@ export default function AdminPage() {
   // =========================
   // UPLOAD DESIGN
   // =========================
+  // 
   const uploadDesign = async (
-    id: string
-  ) => {
+  id: string
+) => {
 
-    const fileInput =
-      document.createElement(
-        "input"
-      );
+  const fileInput =
+    document.createElement("input");
 
-    fileInput.type = "file";
+  fileInput.type = "file";
 
-    fileInput.accept =
-      "image/*";
+  fileInput.accept =
+    "image/*";
 
-    fileInput.click();
+  fileInput.click();
 
-    fileInput.onchange =
-      async () => {
+  fileInput.onchange =
+    async () => {
 
-        const file =
-          fileInput.files?.[0];
+      const file =
+        fileInput.files?.[0];
 
-        if (!file) return;
+      if (!file) return;
 
-        try {
+      try {
 
-          const data =
-            new FormData();
+        // ====================
+        // UPLOAD TO CLOUDINARY
+        // ====================
+        const data =
+          new FormData();
 
-          data.append(
-            "file",
-            file
+        data.append(
+          "file",
+          file
+        );
+
+        data.append(
+          "upload_preset",
+          "printeda"
+        );
+
+        const cloudinaryRes =
+          await fetch(
+            "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
+            {
+              method: "POST",
+              body: data,
+            }
           );
 
-          data.append(
-            "upload_preset",
-            "printeda"
+        const cloudinaryData =
+          await cloudinaryRes.json();
+
+        console.log(
+          "Cloudinary:",
+          cloudinaryData
+        );
+
+        if (
+          !cloudinaryData.secure_url
+        ) {
+
+          alert(
+            "Cloudinary Upload Failed"
           );
 
-          const response =
-            await fetch(
-              "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
-              {
-                method: "POST",
-                body: data,
-              }
-            );
+          return;
+        }
 
-          const result =
-            await response.json();
-
-          console.log(result);
-
-          if (
-            !result.secure_url
-          ) {
-
-            alert(
-              "Upload Failed"
-            );
-
-            return;
-          }
-
+        // ====================
+        // SAVE TO DATABASE
+        // ====================
+        const saveRes =
           await fetch(
             `/api/orders/${id}`,
             {
@@ -290,28 +299,58 @@ export default function AdminPage() {
               body: JSON.stringify(
                 {
                   design:
-                    result.secure_url,
+                    cloudinaryData.secure_url,
                 }
               ),
             }
           );
 
+        const saveData =
+          await saveRes.json();
+
+        console.log(
+          "Mongo Save:",
+          saveData
+        );
+
+        if (!saveData.success) {
+
           alert(
-            "Design Uploaded Successfully"
+            "MongoDB Save Failed"
           );
 
-          fetchOrders();
-
-        } catch (error) {
-
-          console.log(error);
-
-          alert(
-            "Something went wrong"
-          );
+          return;
         }
-      };
-  };
+
+        // ====================
+        // UPDATE UI
+        // ====================
+        setOrders((prev) =>
+          prev.map((item) =>
+            item._id === id
+              ? {
+                  ...item,
+                  design:
+                    cloudinaryData.secure_url,
+                }
+              : item
+          )
+        );
+
+        alert(
+          "Design Uploaded Successfully"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Something went wrong"
+        );
+      }
+    };
+};
 
   // =========================
   // LOADING
