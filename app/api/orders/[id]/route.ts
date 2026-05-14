@@ -9,7 +9,7 @@ import Order from "@/models/Order";
 // ======================
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: any
 ) {
 
   try {
@@ -21,7 +21,7 @@ export async function PATCH(
 
     const updatedOrder =
       await Order.findByIdAndUpdate(
-        params.id,
+        context.params.id,
         body,
         {
           new: true,
@@ -53,7 +53,7 @@ export async function PATCH(
 // ======================
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  context: any
 ) {
 
   try {
@@ -61,7 +61,7 @@ export async function DELETE(
     await connectDB();
 
     await Order.findByIdAndDelete(
-      params.id
+      context.params.id
     );
 
     return NextResponse.json({
