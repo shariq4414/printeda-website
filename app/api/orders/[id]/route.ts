@@ -3,9 +3,12 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/models/Order";
 
+// ======================
+// UPDATE ORDER
+// ======================
 export async function PATCH(
   req: Request,
-  context: any
+  { params }: { params: { id: string } }
 ) {
 
   try {
@@ -17,7 +20,7 @@ export async function PATCH(
 
     const updatedOrder =
       await Order.findByIdAndUpdate(
-        context.params.id,
+        params.id,
         body,
         {
           new: true,
@@ -36,6 +39,7 @@ export async function PATCH(
     return NextResponse.json(
       {
         success: false,
+        message: "Update failed",
       },
       {
         status: 500,
@@ -44,9 +48,12 @@ export async function PATCH(
   }
 }
 
+// ======================
+// DELETE ORDER
+// ======================
 export async function DELETE(
   req: Request,
-  context: any
+  { params }: { params: { id: string } }
 ) {
 
   try {
@@ -54,7 +61,7 @@ export async function DELETE(
     await connectDB();
 
     await Order.findByIdAndDelete(
-      context.params.id
+      params.id
     );
 
     return NextResponse.json({
@@ -68,6 +75,7 @@ export async function DELETE(
     return NextResponse.json(
       {
         success: false,
+        message: "Delete failed",
       },
       {
         status: 500,

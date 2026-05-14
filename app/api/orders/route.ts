@@ -20,7 +20,8 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      totalOrders: orders.length,
+      totalOrders:
+        orders.length,
       orders,
     });
 
@@ -42,7 +43,7 @@ export async function GET() {
 }
 
 // =========================
-// CREATE NEW ORDER
+// CREATE ORDER
 // =========================
 export async function POST(
   req: Request
@@ -55,31 +56,37 @@ export async function POST(
     const body =
       await req.json();
 
-    const {
-      orderId,
-      customerName,
-      phone,
-      product,
-      quantity,
-      amount,
-      paid,
-      remaining,
-      status,
-      design,
-    } = body;
-
     const order =
       await Order.create({
-        orderId,
-        customerName,
-        phone,
-        product,
-        quantity,
-        amount,
-        paid,
-        remaining,
-        status,
-        design,
+        orderId:
+          body.orderId,
+
+        customerName:
+          body.customerName,
+
+        phone:
+          body.phone,
+
+        product:
+          body.product,
+
+        quantity:
+          body.quantity,
+
+        amount:
+          body.amount,
+
+        paid:
+          body.paid,
+
+        remaining:
+          body.remaining,
+
+        status:
+          body.status,
+
+        design:
+          body.design || "",
       });
 
     return NextResponse.json({

@@ -4,8 +4,9 @@ const MONGODB_URI =
   process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
+
   throw new Error(
-    "Please add MONGODB_URI"
+    "Please define MONGODB_URI"
   );
 }
 
@@ -24,6 +25,7 @@ if (!cached) {
 async function connectDB() {
 
   if (cached.conn) {
+
     return cached.conn;
   }
 
@@ -31,7 +33,11 @@ async function connectDB() {
 
     cached.promise =
       mongoose.connect(
-        MONGODB_URI
+        MONGODB_URI,
+        {
+          dbName:
+            "printeda",
+        }
       );
   }
 

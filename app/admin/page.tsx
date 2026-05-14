@@ -18,9 +18,14 @@ import {
   Pencil,
   MessageCircle,
   Upload,
+  Eye,
   PackageCheck,
+  Plus,
 } from "lucide-react";
 
+// =========================
+// TYPES
+// =========================
 interface OrderType {
   _id: string;
   orderId: string;
@@ -37,25 +42,31 @@ interface OrderType {
 
 export default function AdminPage() {
 
+  // =========================
+  // CLERK
+  // =========================
   const {
     isLoaded,
     isSignedIn,
     user,
   } = useUser();
 
+  // =========================
+  // STATES
+  // =========================
   const [orders, setOrders] =
     useState<OrderType[]>([]);
 
   const [loading, setLoading] =
     useState(true);
 
+  const [creating, setCreating] =
+    useState(false);
+
   const [search, setSearch] =
     useState("");
 
   const [showModal, setShowModal] =
-    useState(false);
-
-  const [creating, setCreating] =
     useState(false);
 
   const [formData, setFormData] =
@@ -119,9 +130,7 @@ export default function AdminPage() {
       isLoaded &&
       isSignedIn
     ) {
-
       fetchOrders();
-
     }
 
   }, [
@@ -150,22 +159,40 @@ export default function AdminPage() {
         formData.amount -
         formData.paid;
 
-      await fetch(
-        "/api/orders",
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          "/api/orders",
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
 
-          body: JSON.stringify({
-            ...formData,
-            orderId,
-            remaining,
-          }),
-        }
+            body: JSON.stringify({
+              ...formData,
+              orderId,
+              remaining,
+              design: "",
+            }),
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        alert(
+          "Failed to create order"
+        );
+
+        return;
+      }
+
+      alert(
+        "Order Created Successfully"
       );
 
       setShowModal(false);
@@ -185,6 +212,10 @@ export default function AdminPage() {
     } catch (error) {
 
       console.log(error);
+
+      alert(
+        "Something went wrong"
+      );
 
     } finally {
 
@@ -209,11 +240,28 @@ export default function AdminPage() {
 
     try {
 
-      await fetch(
-        `/api/orders/${id}`,
-        {
-          method: "DELETE",
-        }
+      const response =
+        await fetch(
+          `/api/orders/${id}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        alert(
+          "Delete Failed"
+        );
+
+        return;
+      }
+
+      alert(
+        "Order Deleted"
       );
 
       fetchOrders();
@@ -222,6 +270,137 @@ export default function AdminPage() {
 
       console.log(error);
 
+      alert(
+        "Something went wrong"
+      );
+    }
+  };
+
+  // =========================
+  // EDIT PAYMENT
+  // =========================
+  const editPayment = async (
+    order: OrderType
+  ) => {
+
+    const paymentInput =
+      prompt(
+        "Enter New Payment"
+      );
+
+    if (
+      paymentInput === null
+    ) return;
+
+    const newPayment =
+      Number(paymentInput);
+
+    if (
+      isNaN(newPayment)
+    ) {
+
+      alert(
+        "Invalid Amount"
+      );
+
+      return;
+    }
+
+    try {
+
+      const updatedPaid =
+        order.paid +
+        newPayment;
+
+      const updatedRemaining =
+        order.amount -
+        updatedPaid;
+
+      const response =
+        await fetch(
+          `/api/orders/${order._id}`,
+          {
+            method: "PATCH",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              paid:
+                updatedPaid,
+
+              remaining:
+                updatedRemaining <
+                0
+                  ? 0
+                  : updatedRemaining,
+
+              status:
+                updatedRemaining <=
+                0
+                  ? "Completed"
+                  : order.status,
+            }),
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        alert(
+          "Update Failed"
+        );
+
+        return;
+      }
+
+      fetchOrders();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Something went wrong"
+      );
+    }
+  };
+
+  // =========================
+  // UPDATE STATUS
+  // =========================
+  const updateStatus = async (
+    id: string,
+    status: string
+  ) => {
+
+    try {
+
+      await fetch(
+        `/api/orders/${id}`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            status,
+          }),
+        }
+      );
+
+      fetchOrders();
+
+    } catch (error) {
+
+      console.log(error);
     }
   };
 
@@ -290,28 +469,41 @@ export default function AdminPage() {
             return;
           }
 
-          await fetch(
-            `/api/orders/${id}`,
-            {
-              method: "PATCH",
+          const saveResponse =
+            await fetch(
+              `/api/orders/${id}`,
+              {
+                method: "PATCH",
 
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
 
-              body: JSON.stringify({
-                design:
-                  result.secure_url,
-              }),
-            }
-          );
+                body: JSON.stringify({
+                  design:
+                    result.secure_url,
+                }),
+              }
+            );
 
-          await fetchOrders();
+          const saveData =
+            await saveResponse.json();
+
+          if (!saveData.success) {
+
+            alert(
+              "Database Save Failed"
+            );
+
+            return;
+          }
 
           alert(
-            "Design Uploaded Successfully 🚀"
+            "Design Uploaded"
           );
+
+          fetchOrders();
 
         } catch (error) {
 
@@ -325,39 +517,16 @@ export default function AdminPage() {
   };
 
   // =========================
-  // LOADING
+  // SEARCH
   // =========================
-  if (!isLoaded) {
-
-    return (
-      <div className="min-h-screen flex items-center justify-center text-4xl font-bold">
-        Loading...
-      </div>
+  const filteredOrders =
+    orders.filter((order) =>
+      order.customerName
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
     );
-  }
-
-  // =========================
-  // LOGIN CHECK
-  // =========================
-  if (!isSignedIn) {
-    return <RedirectToSignIn />;
-  }
-
-  // =========================
-  // ADMIN CHECK
-  // =========================
-  if (
-    user?.primaryEmailAddress
-      ?.emailAddress !==
-    adminEmail
-  ) {
-
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white text-5xl font-bold">
-        Access Denied ❌
-      </div>
-    );
-  }
 
   // =========================
   // TOTALS
@@ -385,16 +554,39 @@ export default function AdminPage() {
     );
 
   // =========================
-  // FILTER
+  // LOADING
   // =========================
-  const filteredOrders =
-    orders.filter((order) =>
-      order.customerName
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
+  if (!isLoaded) {
+
+    return (
+      <div className="min-h-screen flex items-center justify-center text-5xl font-bold">
+        Loading...
+      </div>
     );
+  }
+
+  // =========================
+  // LOGIN CHECK
+  // =========================
+  if (!isSignedIn) {
+    return <RedirectToSignIn />;
+  }
+
+  // =========================
+  // ADMIN CHECK
+  // =========================
+  if (
+    user?.primaryEmailAddress
+      ?.emailAddress !==
+    adminEmail
+  ) {
+
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center text-5xl font-black">
+        Access Denied ❌
+      </div>
+    );
+  }
 
   return (
 
@@ -403,49 +595,49 @@ export default function AdminPage() {
       {/* SIDEBAR */}
       <div className="w-72 bg-black text-white hidden lg:flex flex-col p-8">
 
-        <h1 className="text-4xl font-black mb-12">
+        <h1 className="text-5xl font-black mb-14">
           Printeda 🚀
         </h1>
 
         <div className="space-y-4">
 
-          <button className="w-full flex items-center gap-4 bg-white/10 p-4 rounded-2xl">
+          <div className="flex items-center gap-4 bg-white/10 p-4 rounded-2xl">
             <LayoutDashboard />
             Dashboard
-          </button>
+          </div>
 
-          <button className="w-full flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all cursor-pointer">
             <ShoppingBag />
             Orders
-          </button>
+          </div>
 
-          <button className="w-full flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all cursor-pointer">
             <Wallet />
             Payments
-          </button>
+          </div>
 
-          <button className="w-full flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all cursor-pointer">
             <PackageCheck />
             Tracking
-          </button>
+          </div>
 
         </div>
 
       </div>
 
       {/* MAIN */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-8">
 
         {/* TOPBAR */}
         <div className="flex items-center justify-between mb-10">
 
           <div>
 
-            <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-black to-gray-500 bg-clip-text text-transparent">
+            <h1 className="text-6xl font-black bg-gradient-to-r from-black to-zinc-500 bg-clip-text text-transparent">
               Printeda Dashboard
             </h1>
 
-            <p className="text-zinc-500 mt-3 text-lg">
+            <p className="text-zinc-500 text-xl mt-3">
               Welcome back,
               {" "}
               {user?.firstName ||
@@ -460,9 +652,10 @@ export default function AdminPage() {
               onClick={() =>
                 setShowModal(true)
               }
-              className="bg-gradient-to-r from-black to-zinc-700 hover:scale-105 transition-all duration-300 text-white px-6 py-4 rounded-2xl font-bold shadow-2xl"
+              className="bg-gradient-to-r from-black to-zinc-700 hover:scale-105 transition-all duration-300 text-white px-7 py-4 rounded-2xl font-bold shadow-2xl flex items-center gap-2"
             >
-              + Add Order
+              <Plus size={20} />
+              Add Order
             </button>
 
             <UserButton />
@@ -474,23 +667,23 @@ export default function AdminPage() {
         {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
-          <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl">
+          <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl shadow-xl">
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-zinc-500">
+                <p className="text-zinc-500 font-semibold">
                   Total Orders
-                </h2>
-
-                <p className="text-4xl font-black text-blue-600 mt-3">
-                  {orders.length}
                 </p>
+
+                <h2 className="text-5xl font-black text-blue-600 mt-4">
+                  {orders.length}
+                </h2>
 
               </div>
 
-              <div className="bg-blue-100 p-4 rounded-2xl">
+              <div className="bg-blue-100 p-5 rounded-3xl">
                 <ShoppingBag className="text-blue-600" />
               </div>
 
@@ -498,23 +691,23 @@ export default function AdminPage() {
 
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl">
+          <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl shadow-xl">
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-zinc-500">
-                  Total Revenue
-                </h2>
-
-                <p className="text-4xl font-black text-green-600 mt-3">
-                  ₹ {totalRevenue}
+                <p className="text-zinc-500 font-semibold">
+                  Revenue
                 </p>
+
+                <h2 className="text-5xl font-black text-green-600 mt-4">
+                  ₹ {totalRevenue}
+                </h2>
 
               </div>
 
-              <div className="bg-green-100 p-4 rounded-2xl">
+              <div className="bg-green-100 p-5 rounded-3xl">
                 <IndianRupee className="text-green-600" />
               </div>
 
@@ -522,23 +715,23 @@ export default function AdminPage() {
 
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl">
+          <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl shadow-xl">
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-zinc-500">
-                  Received Payment
-                </h2>
-
-                <p className="text-4xl font-black text-blue-500 mt-3">
-                  ₹ {totalPaid}
+                <p className="text-zinc-500 font-semibold">
+                  Paid
                 </p>
+
+                <h2 className="text-5xl font-black text-blue-500 mt-4">
+                  ₹ {totalPaid}
+                </h2>
 
               </div>
 
-              <div className="bg-blue-100 p-4 rounded-2xl">
+              <div className="bg-blue-100 p-5 rounded-3xl">
                 <Wallet className="text-blue-500" />
               </div>
 
@@ -546,23 +739,23 @@ export default function AdminPage() {
 
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl">
+          <div className="bg-white/80 backdrop-blur-xl p-7 rounded-3xl shadow-xl">
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <h2 className="text-lg font-semibold text-zinc-500">
+                <p className="text-zinc-500 font-semibold">
                   Remaining
-                </h2>
-
-                <p className="text-4xl font-black text-red-500 mt-3">
-                  ₹ {totalRemaining}
                 </p>
+
+                <h2 className="text-5xl font-black text-red-500 mt-4">
+                  ₹ {totalRemaining}
+                </h2>
 
               </div>
 
-              <div className="bg-red-100 p-4 rounded-2xl">
+              <div className="bg-red-100 p-5 rounded-3xl">
                 <Wallet className="text-red-500" />
               </div>
 
@@ -573,7 +766,7 @@ export default function AdminPage() {
         </div>
 
         {/* SEARCH */}
-        <div className="bg-white/70 backdrop-blur-xl p-5 rounded-3xl shadow-xl mb-8">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-5 mb-8">
 
           <div className="flex items-center gap-4">
 
@@ -596,136 +789,108 @@ export default function AdminPage() {
         </div>
 
         {/* TABLE */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-zinc-200">
+        <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
 
-          <div className="overflow-x-auto">
+          <table className="w-full">
 
-            <table className="w-full min-w-[1200px]">
+            <thead className="bg-gradient-to-r from-black to-zinc-800 text-white">
 
-              <thead className="bg-gradient-to-r from-black to-zinc-800 text-white">
+              <tr>
+
+                <th className="p-5 text-left">
+                  Order ID
+                </th>
+
+                <th className="p-5 text-left">
+                  Customer
+                </th>
+
+                <th className="p-5 text-left">
+                  Product
+                </th>
+
+                <th className="p-5 text-left">
+                  Design
+                </th>
+
+                <th className="p-5 text-left">
+                  Amount
+                </th>
+
+                <th className="p-5 text-left">
+                  Paid
+                </th>
+
+                <th className="p-5 text-left">
+                  Remaining
+                </th>
+
+                <th className="p-5 text-left">
+                  Status
+                </th>
+
+                <th className="p-5 text-left">
+                  Action
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {loading ? (
 
                 <tr>
 
-                  <th className="p-5 text-left">
-                    Order ID
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Customer
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Product
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Design
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Amount
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Paid
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Remaining
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Status
-                  </th>
-
-                  <th className="p-5 text-left">
-                    Action
-                  </th>
+                  <td
+                    colSpan={9}
+                    className="p-10 text-center text-2xl font-bold"
+                  >
+                    Loading...
+                  </td>
 
                 </tr>
 
-              </thead>
+              ) : (
 
-              <tbody>
+                filteredOrders.map(
+                  (order) => (
 
-                {loading ? (
-
-                  <tr>
-
-                    <td
-                      colSpan={9}
-                      className="p-10 text-center text-xl font-bold"
+                    <tr
+                      key={order._id}
+                      className="border-b hover:bg-zinc-50 transition-all"
                     >
-                      Loading...
-                    </td>
 
-                  </tr>
+                      <td className="p-5 font-bold">
+                        {order.orderId}
+                      </td>
 
-                ) : filteredOrders.length === 0 ? (
+                      <td className="p-5">
+                        {order.customerName}
+                      </td>
 
-                  <tr>
+                      <td className="p-5">
+                        {order.product}
+                      </td>
 
-                    <td
-                      colSpan={9}
-                      className="p-10 text-center text-xl font-bold"
-                    >
-                      No Orders Found
-                    </td>
+                      {/* DESIGN */}
+                      <td className="p-5">
 
-                  </tr>
+                        {order.design ? (
 
-                ) : (
+                          <div className="flex flex-col gap-3">
 
-                  filteredOrders.map(
-                    (order) => (
-
-                      <tr
-                        key={order._id}
-                        className="border-b hover:bg-zinc-50 transition-all"
-                      >
-
-                        <td className="p-5 font-bold">
-                          {order.orderId}
-                        </td>
-
-                        <td className="p-5">
-                          {order.customerName}
-                        </td>
-
-                        <td className="p-5">
-                          {order.product}
-                        </td>
-
-                        {/* DESIGN */}
-                        <td className="p-5">
-
-                          {order.design ? (
-
-                            <div className="flex flex-col gap-3">
-
-                              <a
-                                href={order.design}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 font-bold underline"
-                              >
-                                View Design
-                              </a>
-
-                              <button
-                                onClick={() =>
-                                  uploadDesign(
-                                    order._id
-                                  )
-                                }
-                                className="bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white px-4 py-2 rounded-2xl font-bold"
-                              >
-                                Replace
-                              </button>
-
-                            </div>
-
-                          ) : (
+                            <a
+                              href={
+                                order.design
+                              }
+                              target="_blank"
+                              className="flex items-center gap-2 text-blue-600 font-bold"
+                            >
+                              <Eye size={18} />
+                              View
+                            </a>
 
                             <button
                               onClick={() =>
@@ -733,199 +898,113 @@ export default function AdminPage() {
                                   order._id
                                 )
                               }
-                              className="bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 hover:scale-105 transition-all text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2"
+                              className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl font-semibold"
                             >
-
-                              <Upload size={18} />
-
-                              Upload
-
+                              Replace
                             </button>
 
-                          )}
+                          </div>
 
-                        </td>
+                        ) : (
 
-                        <td className="p-5 font-bold">
-                          ₹ {order.amount}
-                        </td>
-
-                        <td className="p-5 text-green-600 font-bold">
-                          ₹ {order.paid}
-                        </td>
-
-                        <td className="p-5 text-red-500 font-bold">
-                          ₹ {order.remaining}
-                        </td>
-
-                        {/* STATUS */}
-                        <td className="p-5">
-
-                          <select
-
-                            value={order.status}
-
-                            onChange={async (
-                              e
-                            ) => {
-
-                              const newStatus =
-                                e.target.value;
-
-                              await fetch(
-                                `/api/orders/${order._id}`,
-                                {
-                                  method:
-                                    "PATCH",
-
-                                  headers:
-                                    {
-                                      "Content-Type":
-                                        "application/json",
-                                    },
-
-                                  body:
-                                    JSON.stringify(
-                                      {
-                                        status:
-                                          newStatus,
-                                      }
-                                    ),
-                                }
-                              );
-
-                              fetchOrders();
-                            }}
-
-                            className="border border-zinc-300 rounded-2xl px-4 py-3 bg-white shadow-sm outline-none"
+                          <button
+                            onClick={() =>
+                              uploadDesign(
+                                order._id
+                              )
+                            }
+                            className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:scale-105 transition-all text-white px-5 py-3 rounded-2xl font-semibold flex items-center gap-2"
                           >
+                            <Upload size={18} />
+                            Upload
+                          </button>
 
-                            <option>
-                              Order Received
-                            </option>
+                        )}
 
-                            <option>
-                              Designing
-                            </option>
+                      </td>
 
-                            <option>
-                              Printing
-                            </option>
+                      <td className="p-5 font-bold">
+                        ₹ {order.amount}
+                      </td>
 
-                            <option>
-                              Packaging
-                            </option>
+                      <td className="p-5 text-green-600 font-bold">
+                        ₹ {order.paid}
+                      </td>
 
-                            <option>
-                              Ready
-                            </option>
+                      <td className="p-5 text-red-500 font-bold">
+                        ₹ {order.remaining}
+                      </td>
 
-                            <option>
-                              Completed
-                            </option>
+                      {/* STATUS */}
+                      <td className="p-5">
 
-                          </select>
+                        <select
+                          value={
+                            order.status
+                          }
+                          onChange={(e) =>
+                            updateStatus(
+                              order._id,
+                              e.target.value
+                            )
+                          }
+                          className="border border-zinc-300 rounded-2xl px-4 py-3 bg-white outline-none"
+                        >
 
-                        </td>
+                          <option>
+                            Order Received
+                          </option>
 
-                        {/* ACTION */}
-                        <td className="p-5">
+                          <option>
+                            Designing
+                          </option>
 
-                          <div className="flex flex-wrap gap-3">
+                          <option>
+                            Printing
+                          </option>
 
-                            <button
+                          <option>
+                            Packaging
+                          </option>
 
-                              onClick={async () => {
+                          <option>
+                            Ready
+                          </option>
 
-                                const paymentInput =
-                                  prompt(
-                                    "Enter Paid Amount"
-                                  );
+                          <option>
+                            Completed
+                          </option>
 
-                                if (
-                                  paymentInput ===
-                                  null
-                                ) return;
+                        </select>
 
-                                const newPayment =
-                                  Number(
-                                    paymentInput
-                                  );
+                      </td>
 
-                                if (
-                                  isNaN(
-                                    newPayment
-                                  )
-                                ) return;
+                      {/* ACTION */}
+                      <td className="p-5">
 
-                                const updatedPaid =
-                                  order.paid +
-                                  newPayment;
+                        <div className="flex flex-wrap gap-3">
 
-                                const updatedRemaining =
-                                  order.amount -
-                                  updatedPaid;
+                          <button
+                            onClick={() =>
+                              editPayment(
+                                order
+                              )
+                            }
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
+                          >
+                            <Pencil size={18} />
+                            Edit
+                          </button>
 
-                                const updatedStatus =
-                                  updatedRemaining <=
-                                  0
-                                    ? "Completed"
-                                    : order.status;
-
-                                await fetch(
-                                  `/api/orders/${order._id}`,
-                                  {
-                                    method:
-                                      "PATCH",
-
-                                    headers:
-                                      {
-                                        "Content-Type":
-                                          "application/json",
-                                      },
-
-                                    body:
-                                      JSON.stringify(
-                                        {
-                                          paid:
-                                            updatedPaid,
-
-                                          remaining:
-                                            updatedRemaining <
-                                            0
-                                              ? 0
-                                              : updatedRemaining,
-
-                                          status:
-                                            updatedStatus,
-                                        }
-                                      ),
-                                  }
-                                );
-
-                                fetchOrders();
-                              }}
-
-                              className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
-                            >
-
-                              <Pencil size={18} />
-
-                              Edit
-
-                            </button>
-
-                            <a
-                              href={`https://wa.me/91${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-`Hello ${order.customerName}
-
-Your order is updated ✅
+                          <a
+                            href={`https://wa.me/91${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
+`Your Order Update
 
 Order ID: ${order.orderId}
 
 Product: ${order.product}
 
-Amount: ₹${order.amount}
+Total Amount: ₹${order.amount}
 
 Paid: ₹${order.paid}
 
@@ -933,188 +1012,201 @@ Remaining: ₹${order.remaining}
 
 Status: ${order.status}
 
-- Team Printeda 🚀`
-                              )}`}
+Thank you for choosing Printeda 🚀`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
+                          >
+                            <MessageCircle size={18} />
+                            WhatsApp
+                          </a>
 
-                              target="_blank"
+                          <button
+                            onClick={() =>
+                              deleteOrder(
+                                order._id
+                              )
+                            }
+                            className="bg-gradient-to-r from-red-500 to-rose-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
+                          >
+                            <Trash2 size={18} />
+                            Delete
+                          </button>
 
-                              rel="noopener noreferrer"
+                        </div>
 
-                              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
-                            >
+                      </td>
 
-                              <MessageCircle size={18} />
-
-                              WhatsApp
-
-                            </a>
-
-                            <button
-                              onClick={() =>
-                                deleteOrder(
-                                  order._id
-                                )
-                              }
-                              className="bg-gradient-to-r from-red-500 to-rose-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
-                            >
-
-                              <Trash2 size={18} />
-
-                              Delete
-
-                            </button>
-
-                          </div>
-
-                        </td>
-
-                      </tr>
-                    )
+                    </tr>
                   )
-                )}
+                )
+              )}
 
-              </tbody>
+            </tbody>
 
-            </table>
-
-          </div>
+          </table>
 
         </div>
+
+        {/* MODAL */}
+        {showModal && (
+
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+
+            <div className="bg-white rounded-3xl p-8 w-full max-w-xl">
+
+              <h2 className="text-4xl font-black mb-8">
+                Add Order
+              </h2>
+
+              <div className="grid grid-cols-1 gap-4">
+
+                <input
+                  type="text"
+                  placeholder="Customer Name"
+                  value={
+                    formData.customerName
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      customerName:
+                        e.target.value,
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Phone"
+                  value={
+                    formData.phone
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      phone:
+                        e.target.value,
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Product"
+                  value={
+                    formData.product
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      product:
+                        e.target.value,
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  value={
+                    formData.quantity
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      quantity:
+                        Number(
+                          e.target.value
+                        ),
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={
+                    formData.amount
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      amount:
+                        Number(
+                          e.target.value
+                        ),
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Paid"
+                  value={
+                    formData.paid
+                  }
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      paid:
+                        Number(
+                          e.target.value
+                        ),
+                    })
+                  }
+                  className="border p-4 rounded-2xl"
+                />
+
+              </div>
+
+              <div className="mt-5 text-xl font-bold text-red-500">
+
+                Remaining:
+                ₹ {
+                  formData.amount -
+                  formData.paid
+                }
+
+              </div>
+
+              <div className="flex gap-4 mt-8">
+
+                <button
+                  onClick={
+                    createOrder
+                  }
+                  disabled={creating}
+                  className="bg-black text-white px-6 py-4 rounded-2xl font-bold"
+                >
+                  {creating
+                    ? "Saving..."
+                    : "Save Order"}
+                </button>
+
+                <button
+                  onClick={() =>
+                    setShowModal(false)
+                  }
+                  className="bg-zinc-200 px-6 py-4 rounded-2xl font-bold"
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
 
       </div>
-
-      {/* MODAL */}
-      {showModal && (
-
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-
-          <div className="bg-white w-full max-w-2xl rounded-3xl p-8 shadow-2xl">
-
-            <h2 className="text-3xl font-black mb-6">
-              Add New Order 🚀
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              <input
-                placeholder="Customer Name"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    customerName:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                placeholder="Phone"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    phone:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                placeholder="Product"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    product:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Quantity"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    quantity:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Amount"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    amount:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Paid"
-                className="border p-4 rounded-2xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    paid:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-            </div>
-
-            <div className="mt-6 text-xl font-bold text-red-500">
-
-              Remaining:
-              ₹ {
-                formData.amount -
-                formData.paid
-              }
-
-            </div>
-
-            <div className="flex gap-4 mt-8">
-
-              <button
-                onClick={createOrder}
-                className="bg-black text-white px-6 py-4 rounded-2xl font-bold"
-              >
-                {creating
-                  ? "Saving..."
-                  : "Save Order"}
-              </button>
-
-              <button
-                onClick={() =>
-                  setShowModal(false)
-                }
-                className="bg-zinc-200 px-6 py-4 rounded-2xl font-bold"
-              >
-                Cancel
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
 
     </div>
   );

@@ -6,41 +6,49 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     customerName: {
       type: String,
       required: true,
+      trim: true,
     },
 
     phone: {
       type: String,
       required: true,
+      trim: true,
     },
 
     product: {
       type: String,
       required: true,
+      trim: true,
     },
 
     quantity: {
       type: Number,
       required: true,
+      default: 1,
     },
 
     amount: {
       type: Number,
       required: true,
+      default: 0,
     },
 
     paid: {
       type: Number,
       required: true,
+      default: 0,
     },
 
     remaining: {
       type: Number,
       required: true,
+      default: 0,
     },
 
     status: {
@@ -61,5 +69,11 @@ const OrderSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.models.Order ||
-  mongoose.model("Order", OrderSchema);
+const Order =
+  mongoose.models.Order ||
+  mongoose.model(
+    "Order",
+    OrderSchema
+  );
+
+export default Order;
