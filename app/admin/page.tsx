@@ -1001,16 +1001,10 @@ export default function AdminPage() {
 `Your Order has been recieved
 
 Order ID: ${order.orderId}
-
 Product: ${order.product}
-
 Total Amount: ₹${order.amount}
-
 Paid: ₹${order.paid}
-
 Remaining: ₹${order.remaining}
-
-Status: ${order.status}
 
 Thank you for choosing Printeda powered by Anwar Computer`
                             )}`}
