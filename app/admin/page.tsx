@@ -8,6 +8,20 @@ import {
   useUser,
 } from "@clerk/nextjs";
 
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  IndianRupee,
+  Wallet,
+  Search,
+  Trash2,
+  Pencil,
+  MessageCircle,
+  Upload,
+  Eye,
+  PackageCheck,
+} from "lucide-react";
+
 interface OrderType {
   _id: string;
   orderId: string;
@@ -213,79 +227,68 @@ export default function AdminPage() {
   // =========================
   // UPLOAD DESIGN
   // =========================
-  // 
   const uploadDesign = async (
-  id: string
-) => {
+    id: string
+  ) => {
 
-  const fileInput =
-    document.createElement("input");
+    const fileInput =
+      document.createElement(
+        "input"
+      );
 
-  fileInput.type = "file";
+    fileInput.type = "file";
 
-  fileInput.accept =
-    "image/*";
+    fileInput.accept =
+      "image/*";
 
-  fileInput.click();
+    fileInput.click();
 
-  fileInput.onchange =
-    async () => {
+    fileInput.onchange =
+      async () => {
 
-      const file =
-        fileInput.files?.[0];
+        const file =
+          fileInput.files?.[0];
 
-      if (!file) return;
+        if (!file) return;
 
-      try {
+        try {
 
-        // ====================
-        // UPLOAD TO CLOUDINARY
-        // ====================
-        const data =
-          new FormData();
+          const data =
+            new FormData();
 
-        data.append(
-          "file",
-          file
-        );
-
-        data.append(
-          "upload_preset",
-          "printeda"
-        );
-
-        const cloudinaryRes =
-          await fetch(
-            "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
-            {
-              method: "POST",
-              body: data,
-            }
+          data.append(
+            "file",
+            file
           );
 
-        const cloudinaryData =
-          await cloudinaryRes.json();
-
-        console.log(
-          "Cloudinary:",
-          cloudinaryData
-        );
-
-        if (
-          !cloudinaryData.secure_url
-        ) {
-
-          alert(
-            "Cloudinary Upload Failed"
+          data.append(
+            "upload_preset",
+            "printeda"
           );
 
-          return;
-        }
+          const response =
+            await fetch(
+              "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
+              {
+                method: "POST",
+                body: data,
+              }
+            );
 
-        // ====================
-        // SAVE TO DATABASE
-        // ====================
-        const saveRes =
+          const result =
+            await response.json();
+
+          if (
+            !result.secure_url
+          ) {
+
+            alert(
+              "Upload Failed"
+            );
+
+            return;
+          }
+
           await fetch(
             `/api/orders/${id}`,
             {
@@ -299,58 +302,24 @@ export default function AdminPage() {
               body: JSON.stringify(
                 {
                   design:
-                    cloudinaryData.secure_url,
+                    result.secure_url,
                 }
               ),
             }
           );
 
-        const saveData =
-          await saveRes.json();
+          fetchOrders();
 
-        console.log(
-          "Mongo Save:",
-          saveData
-        );
+        } catch (error) {
 
-        if (!saveData.success) {
+          console.log(error);
 
           alert(
-            "MongoDB Save Failed"
+            "Something went wrong"
           );
-
-          return;
         }
-
-        // ====================
-        // UPDATE UI
-        // ====================
-        setOrders((prev) =>
-          prev.map((item) =>
-            item._id === id
-              ? {
-                  ...item,
-                  design:
-                    cloudinaryData.secure_url,
-                }
-              : item
-          )
-        );
-
-        alert(
-          "Design Uploaded Successfully"
-        );
-
-      } catch (error) {
-
-        console.log(error);
-
-        alert(
-          "Something went wrong"
-        );
-      }
-    };
-};
+      };
+  };
 
   // =========================
   // LOADING
@@ -358,7 +327,7 @@ export default function AdminPage() {
   if (!isLoaded) {
 
     return (
-      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
+      <div className="min-h-screen flex items-center justify-center text-4xl font-bold">
         Loading...
       </div>
     );
@@ -381,7 +350,7 @@ export default function AdminPage() {
   ) {
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white text-4xl font-bold">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white text-5xl font-bold">
         Access Denied ❌
       </div>
     );
@@ -426,219 +395,293 @@ export default function AdminPage() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-white to-zinc-200 flex">
 
-      {/* TOPBAR */}
-      <div className="flex items-center justify-between mb-8">
+      {/* SIDEBAR */}
+      <div className="w-72 bg-black text-white hidden lg:flex flex-col p-8">
 
-        <div>
+        <h1 className="text-4xl font-black mb-12">
+          Printeda 🚀
+        </h1>
 
-          <h1 className="text-4xl font-bold">
-            Printeda Dashboard 🚀
-          </h1>
+        <div className="space-y-4">
 
-          <p className="text-gray-500 mt-2">
-            Welcome back,
-            {" "}
-            {user?.firstName ||
-              "Admin"}
-          </p>
+          <div className="flex items-center gap-4 bg-white/10 p-4 rounded-2xl">
+            <LayoutDashboard />
+            Dashboard
+          </div>
 
-        </div>
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+            <ShoppingBag />
+            Orders
+          </div>
 
-        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+            <Wallet />
+            Payments
+          </div>
 
-          <button
-            onClick={() =>
-              setShowModal(true)
-            }
-            className="bg-black text-white px-5 py-3 rounded-xl font-semibold"
-          >
-            + Add Order
-          </button>
-
-          <UserButton />
+          <div className="flex items-center gap-4 hover:bg-white/10 p-4 rounded-2xl transition-all">
+            <PackageCheck />
+            Tracking
+          </div>
 
         </div>
 
       </div>
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      {/* MAIN */}
+      <div className="flex-1 p-6">
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">
-            Total Orders
-          </h2>
+        {/* TOPBAR */}
+        <div className="flex items-center justify-between mb-10">
 
-          <p className="text-3xl font-bold text-blue-600">
-            {orders.length}
-          </p>
+          <div>
+
+            <h1 className="text-5xl font-black tracking-tight bg-gradient-to-r from-black to-gray-500 bg-clip-text text-transparent">
+              Printeda Dashboard
+            </h1>
+
+            <p className="text-zinc-500 mt-3 text-lg">
+              Welcome back,
+              {" "}
+              {user?.firstName ||
+                "Admin"}
+            </p>
+
+          </div>
+
+          <div className="flex items-center gap-4">
+
+            <button
+              onClick={() =>
+                setShowModal(true)
+              }
+              className="bg-gradient-to-r from-black to-zinc-700 hover:scale-105 transition-all duration-300 text-white px-6 py-4 rounded-2xl font-bold shadow-2xl"
+            >
+              + Add Order
+            </button>
+
+            <UserButton />
+
+          </div>
+
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">
-            Total Revenue
-          </h2>
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 
-          <p className="text-3xl font-bold text-green-600">
-            ₹ {totalRevenue}
-          </p>
+          {/* CARD */}
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all">
+
+            <div className="flex items-center justify-between">
+
+              <div>
+
+                <h2 className="text-lg font-semibold text-zinc-500">
+                  Total Orders
+                </h2>
+
+                <p className="text-4xl font-black text-blue-600 mt-3">
+                  {orders.length}
+                </p>
+
+              </div>
+
+              <div className="bg-blue-100 p-4 rounded-2xl">
+                <ShoppingBag className="text-blue-600" />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* CARD */}
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all">
+
+            <div className="flex items-center justify-between">
+
+              <div>
+
+                <h2 className="text-lg font-semibold text-zinc-500">
+                  Total Revenue
+                </h2>
+
+                <p className="text-4xl font-black text-green-600 mt-3">
+                  ₹ {totalRevenue}
+                </p>
+
+              </div>
+
+              <div className="bg-green-100 p-4 rounded-2xl">
+                <IndianRupee className="text-green-600" />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* CARD */}
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all">
+
+            <div className="flex items-center justify-between">
+
+              <div>
+
+                <h2 className="text-lg font-semibold text-zinc-500">
+                  Received Payment
+                </h2>
+
+                <p className="text-4xl font-black text-blue-500 mt-3">
+                  ₹ {totalPaid}
+                </p>
+
+              </div>
+
+              <div className="bg-blue-100 p-4 rounded-2xl">
+                <Wallet className="text-blue-500" />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* CARD */}
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all">
+
+            <div className="flex items-center justify-between">
+
+              <div>
+
+                <h2 className="text-lg font-semibold text-zinc-500">
+                  Remaining
+                </h2>
+
+                <p className="text-4xl font-black text-red-500 mt-3">
+                  ₹ {totalRemaining}
+                </p>
+
+              </div>
+
+              <div className="bg-red-100 p-4 rounded-2xl">
+                <Wallet className="text-red-500" />
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">
-            Received Payment
-          </h2>
+        {/* SEARCH */}
+        <div className="bg-white/70 backdrop-blur-xl border border-white/40 p-5 rounded-3xl shadow-xl mb-8">
 
-          <p className="text-3xl font-bold text-blue-500">
-            ₹ {totalPaid}
-          </p>
+          <div className="flex items-center gap-4">
+
+            <Search className="text-zinc-500" />
+
+            <input
+              type="text"
+              placeholder="Search customer..."
+              value={search}
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
+              className="w-full bg-transparent outline-none text-lg"
+            />
+
+          </div>
+
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">
-            Remaining Payment
-          </h2>
+        {/* TABLE */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-zinc-200">
 
-          <p className="text-3xl font-bold text-red-600">
-            ₹ {totalRemaining}
-          </p>
-        </div>
+          <table className="w-full">
 
-      </div>
-
-      {/* SEARCH */}
-      <div className="bg-white p-4 rounded-2xl shadow-lg mb-6">
-
-        <input
-          type="text"
-          placeholder="Search customer..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          className="w-full border p-4 rounded-xl"
-        />
-
-      </div>
-
-      {/* TABLE */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-x-auto">
-
-        <table className="w-full">
-
-          <thead className="bg-black text-white">
-
-            <tr>
-
-              <th className="p-4 text-left">
-                Order ID
-              </th>
-
-              <th className="p-4 text-left">
-                Customer
-              </th>
-
-              <th className="p-4 text-left">
-                Product
-              </th>
-
-              <th className="p-4 text-left">
-                Design
-              </th>
-
-              <th className="p-4 text-left">
-                Amount
-              </th>
-
-              <th className="p-4 text-left">
-                Paid
-              </th>
-
-              <th className="p-4 text-left">
-                Remaining
-              </th>
-
-              <th className="p-4 text-left">
-                Status
-              </th>
-
-              <th className="p-4 text-left">
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {loading ? (
+            <thead className="bg-gradient-to-r from-black to-zinc-800 text-white">
 
               <tr>
 
-                <td
-                  className="p-4"
-                  colSpan={9}
-                >
-                  Loading...
-                </td>
+                <th className="p-5 text-left">
+                  Order ID
+                </th>
+
+                <th className="p-5 text-left">
+                  Customer
+                </th>
+
+                <th className="p-5 text-left">
+                  Product
+                </th>
+
+                <th className="p-5 text-left">
+                  Design
+                </th>
+
+                <th className="p-5 text-left">
+                  Amount
+                </th>
+
+                <th className="p-5 text-left">
+                  Paid
+                </th>
+
+                <th className="p-5 text-left">
+                  Remaining
+                </th>
+
+                <th className="p-5 text-left">
+                  Status
+                </th>
+
+                <th className="p-5 text-left">
+                  Action
+                </th>
 
               </tr>
 
-            ) : filteredOrders.length ===
-              0 ? (
+            </thead>
 
-              <tr>
+            <tbody>
 
-                <td
-                  className="p-4"
-                  colSpan={9}
-                >
-                  No Orders Found
-                </td>
-
-              </tr>
-
-            ) : (
-
-              filteredOrders.map(
+              {filteredOrders.map(
                 (order) => (
 
                   <tr
                     key={order._id}
-                    className="border-b"
+                    className="border-b hover:bg-zinc-50 transition-all"
                   >
 
-                    <td className="p-4 font-semibold">
+                    <td className="p-5 font-bold">
                       {order.orderId}
                     </td>
 
-                    <td className="p-4">
+                    <td className="p-5">
                       {order.customerName}
                     </td>
 
-                    <td className="p-4">
+                    <td className="p-5">
                       {order.product}
                     </td>
 
                     {/* DESIGN */}
-                    <td className="p-4">
+                    <td className="p-5">
 
                       {order.design ? (
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-3">
 
                           <a
                             href={
                               order.design
                             }
                             target="_blank"
-                            className="text-blue-600 underline font-semibold"
+                            className="flex items-center gap-2 text-blue-600 font-semibold"
                           >
+                            <Eye size={18} />
                             View Design
                           </a>
 
@@ -648,7 +691,7 @@ export default function AdminPage() {
                                 order._id
                               )
                             }
-                            className="bg-purple-600 text-white px-3 py-2 rounded-lg text-sm"
+                            className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl font-semibold"
                           >
                             Replace Design
                           </button>
@@ -663,8 +706,9 @@ export default function AdminPage() {
                               order._id
                             )
                           }
-                          className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+                          className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:scale-105 transition-all text-white px-5 py-3 rounded-2xl font-semibold flex items-center gap-2"
                         >
+                          <Upload size={18} />
                           Upload Design
                         </button>
 
@@ -672,204 +716,103 @@ export default function AdminPage() {
 
                     </td>
 
-                    <td className="p-4">
+                    <td className="p-5 font-bold">
                       ₹ {order.amount}
                     </td>
 
-                    <td className="p-4 text-green-600 font-semibold">
+                    <td className="p-5 text-green-600 font-bold">
                       ₹ {order.paid}
                     </td>
 
-                    <td className="p-4 text-red-600 font-semibold">
+                    <td className="p-5 text-red-500 font-bold">
                       ₹ {order.remaining}
                     </td>
 
-                    {/* STATUS */}
-                    <td className="p-4">
+                    <td className="p-5">
 
                       <select
-                        value={
-                          order.status
-                        }
-                        onChange={async (
-                          e
-                        ) => {
+  value={order.status}
 
-                          const newStatus =
-                            e.target
-                              .value;
+  onChange={async (e) => {
 
-                          try {
+    const newStatus =
+      e.target.value;
 
-                            await fetch(
-                              `/api/orders/${order._id}`,
-                              {
-                                method:
-                                  "PATCH",
+    try {
 
-                                headers:
-                                  {
-                                    "Content-Type":
-                                      "application/json",
-                                  },
+      await fetch(
+        `/api/orders/${order._id}`,
+        {
+          method: "PATCH",
 
-                                body:
-                                  JSON.stringify(
-                                    {
-                                      status:
-                                        newStatus,
-                                    }
-                                  ),
-                              }
-                            );
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-                            fetchOrders();
+          body: JSON.stringify({
+            status: newStatus,
+          }),
+        }
+      );
 
-                          } catch (
-                            error
-                          ) {
+      fetchOrders();
 
-                            console.log(
-                              error
-                            );
+    } catch (error) {
 
-                          }
-                        }}
-                        className="border p-2 rounded-lg"
-                      >
+      console.log(error);
 
-                        <option>
-                          Order Received
-                        </option>
+    }
+  }}
 
-                        <option>
-                          Designing
-                        </option>
+  className="border border-zinc-300 rounded-2xl px-4 py-3 bg-white shadow-sm outline-none focus:ring-2 focus:ring-black"
+>
 
-                        <option>
-                          Printing
-                        </option>
+  <option>
+    Order Received
+  </option>
 
-                        <option>
-                          Packaging
-                        </option>
+  <option>
+    Designing
+  </option>
 
-                        <option>
-                          Ready
-                        </option>
+  <option>
+    Printing
+  </option>
 
-                        <option>
-                          Completed
-                        </option>
+  <option>
+    Packaging
+  </option>
 
-                      </select>
+  <option>
+    Ready
+  </option>
 
+  <option>
+    Completed
+  </option>
+
+</select>
                     </td>
 
                     {/* ACTION */}
-                    <td className="p-4">
+                    <td className="p-5">
 
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-3">
 
                         <button
-                          onClick={async () => {
-
-                            const paymentInput =
-                              prompt(
-                                "Enter Paid Amount"
-                              );
-
-                            if (
-                              paymentInput ===
-                              null
-                            ) return;
-
-                            const newPayment =
-                              Number(
-                                paymentInput
-                              );
-
-                            if (
-                              isNaN(
-                                newPayment
-                              )
-                            ) return;
-
-                            const updatedPaid =
-                              order.paid +
-                              newPayment;
-
-                            const updatedRemaining =
-                              order.amount -
-                              updatedPaid;
-
-                            const updatedStatus =
-                              updatedRemaining <=
-                              0
-                                ? "Completed"
-                                : order.status;
-
-                            await fetch(
-                              `/api/orders/${order._id}`,
-                              {
-                                method:
-                                  "PATCH",
-
-                                headers:
-                                  {
-                                    "Content-Type":
-                                      "application/json",
-                                  },
-
-                                body:
-                                  JSON.stringify(
-                                    {
-                                      paid:
-                                        updatedPaid,
-
-                                      remaining:
-                                        updatedRemaining <
-                                        0
-                                          ? 0
-                                          : updatedRemaining,
-
-                                      status:
-                                        updatedStatus,
-                                    }
-                                  ),
-                              }
-                            );
-
-                            fetchOrders();
-                          }}
-                          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                          className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
                         >
+                          <Pencil size={18} />
                           Edit
                         </button>
 
-                        {/* WHATSAPP */}
                         <a
-                          href={`https://wa.me/91${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-`Your Order Has Been Received
-
-Order ID: ${order.orderId}
-
-Product: ${order.product}
-
-Total Amount: ₹${order.amount}
-
-Paid: ₹${order.paid}
-
-Remaining: ₹${order.remaining}
-
-Status: ${order.status}
-
-Thank you for choosing Printeda`
-                          )}`}
+                          href={`https://wa.me/91${order.phone.replace(/\D/g, "")}`}
                           target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                          className="bg-gradient-to-r from-green-500 to-emerald-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
                         >
+                          <MessageCircle size={18} />
                           WhatsApp
                         </a>
 
@@ -879,8 +822,9 @@ Thank you for choosing Printeda`
                               order._id
                             )
                           }
-                          className="bg-red-600 text-white px-4 py-2 rounded-lg"
+                          className="bg-gradient-to-r from-red-500 to-rose-600 hover:scale-105 transition-all text-white px-4 py-3 rounded-2xl flex items-center gap-2"
                         >
+                          <Trash2 size={18} />
                           Delete
                         </button>
 
@@ -890,150 +834,15 @@ Thank you for choosing Printeda`
 
                   </tr>
                 )
-              )
-            )}
+              )}
 
-          </tbody>
+            </tbody>
 
-        </table>
-
-      </div>
-
-      {/* ADD ORDER MODAL */}
-      {showModal && (
-
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
-          <div className="bg-white p-8 rounded-2xl w-full max-w-xl">
-
-            <h2 className="text-3xl font-bold mb-6">
-              Add New Order
-            </h2>
-
-            <div className="grid grid-cols-1 gap-4">
-
-              <input
-                placeholder="Customer Name"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    customerName:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                placeholder="Phone"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    phone:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                placeholder="Product"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    product:
-                      e.target.value,
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Quantity"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    quantity:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Amount"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    amount:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="Paid"
-                className="border p-3 rounded-xl"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    paid:
-                      Number(
-                        e.target.value
-                      ),
-                  })
-                }
-              />
-
-            </div>
-
-            <div className="mt-4 text-lg font-semibold text-red-600">
-
-              Remaining:
-              ₹ {
-                formData.amount -
-                formData.paid
-              }
-
-            </div>
-
-            <div className="flex gap-4 mt-6">
-
-              <button
-                onClick={
-                  createOrder
-                }
-                disabled={creating}
-                className="bg-black text-white px-6 py-3 rounded-xl font-semibold"
-              >
-                {creating
-                  ? "Saving..."
-                  : "Save Order"}
-              </button>
-
-              <button
-                onClick={() =>
-                  setShowModal(false)
-                }
-                className="bg-gray-300 px-6 py-3 rounded-xl font-semibold"
-              >
-                Cancel
-              </button>
-
-            </div>
-
-          </div>
+          </table>
 
         </div>
-      )}
+
+      </div>
 
     </div>
   );
