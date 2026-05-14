@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import connectDB from "@/lib/mongodb";
-
 import Order from "@/models/Order";
 
 // ======================
@@ -19,9 +18,12 @@ export async function PATCH(
     const body =
       await req.json();
 
+    const id =
+      context.params.id;
+
     const updatedOrder =
       await Order.findByIdAndUpdate(
-        context.params.id,
+        id,
         {
           $set: body,
         },
@@ -62,8 +64,11 @@ export async function DELETE(
 
     await connectDB();
 
+    const id =
+      context.params.id;
+
     await Order.findByIdAndDelete(
-      context.params.id
+      id
     );
 
     return NextResponse.json({
