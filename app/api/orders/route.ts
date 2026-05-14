@@ -12,8 +12,11 @@ export async function GET() {
 
     await connectDB();
 
-    const orders = await Order.find()
-      .sort({ createdAt: -1 });
+    const orders =
+      await Order.find()
+        .sort({
+          createdAt: -1,
+        });
 
     return NextResponse.json({
       success: true,
@@ -28,7 +31,8 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch orders",
+        message:
+          "Failed to fetch orders",
       },
       {
         status: 500,
@@ -48,7 +52,8 @@ export async function POST(
 
     await connectDB();
 
-    const body = await req.json();
+    const body =
+      await req.json();
 
     const {
       orderId,
@@ -60,19 +65,22 @@ export async function POST(
       paid,
       remaining,
       status,
+      design,
     } = body;
 
-    const order = await Order.create({
-      orderId,
-      customerName,
-      phone,
-      product,
-      quantity,
-      amount,
-      paid,
-      remaining,
-      status,
-    });
+    const order =
+      await Order.create({
+        orderId,
+        customerName,
+        phone,
+        product,
+        quantity,
+        amount,
+        paid,
+        remaining,
+        status,
+        design,
+      });
 
     return NextResponse.json({
       success: true,
@@ -88,7 +96,8 @@ export async function POST(
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to create order",
+        message:
+          "Failed to create order",
       },
       {
         status: 500,

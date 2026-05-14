@@ -22,7 +22,9 @@ export async function PATCH(
     const updatedOrder =
       await Order.findByIdAndUpdate(
         context.params.id,
-        body,
+        {
+          $set: body,
+        },
         {
           new: true,
         }
