@@ -3,9 +3,6 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/models/Order";
 
-// ======================
-// UPDATE ORDER
-// ======================
 export async function PATCH(
   req: Request,
   context: any
@@ -18,15 +15,10 @@ export async function PATCH(
     const body =
       await req.json();
 
-    const id =
-      context.params.id;
-
     const updatedOrder =
       await Order.findByIdAndUpdate(
-        id,
-        {
-          $set: body,
-        },
+        context.params.id,
+        body,
         {
           new: true,
         }
@@ -52,9 +44,6 @@ export async function PATCH(
   }
 }
 
-// ======================
-// DELETE ORDER
-// ======================
 export async function DELETE(
   req: Request,
   context: any
@@ -64,11 +53,8 @@ export async function DELETE(
 
     await connectDB();
 
-    const id =
-      context.params.id;
-
     await Order.findByIdAndDelete(
-      id
+      context.params.id
     );
 
     return NextResponse.json({
