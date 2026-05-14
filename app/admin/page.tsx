@@ -71,17 +71,20 @@ export default function AdminPage() {
 
       setLoading(true);
 
-      const response = await fetch(
-        "/api/orders",
-        {
-          cache: "no-store",
-        }
-      );
+      const response =
+        await fetch(
+          "/api/orders",
+          {
+            cache: "no-store",
+          }
+        );
 
       const data =
         await response.json();
 
-      setOrders(data.orders || []);
+      setOrders(
+        data.orders || []
+      );
 
     } catch (error) {
 
@@ -132,21 +135,23 @@ export default function AdminPage() {
         formData.amount -
         formData.paid;
 
-      await fetch("/api/orders", {
+      await fetch(
+        "/api/orders",
+        {
+          method: "POST",
 
-        method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
-        body: JSON.stringify({
-          ...formData,
-          orderId,
-          remaining,
-        }),
-      });
+          body: JSON.stringify({
+            ...formData,
+            orderId,
+            remaining,
+          }),
+        }
+      );
 
       setShowModal(false);
 
@@ -213,93 +218,99 @@ export default function AdminPage() {
   ) => {
 
     const fileInput =
-      document.createElement("input");
+      document.createElement(
+        "input"
+      );
 
     fileInput.type = "file";
 
-    fileInput.accept = "image/*";
+    fileInput.accept =
+      "image/*";
 
     fileInput.click();
 
-    fileInput.onchange = async () => {
+    fileInput.onchange =
+      async () => {
 
-      const file =
-        fileInput.files?.[0];
+        const file =
+          fileInput.files?.[0];
 
-      if (!file) return;
+        if (!file) return;
 
-      try {
+        try {
 
-        const data =
-          new FormData();
+          const data =
+            new FormData();
 
-        data.append(
-          "file",
-          file
-        );
+          data.append(
+            "file",
+            file
+          );
 
-        data.append(
-          "upload_preset",
-          "printeda"
-        );
+          data.append(
+            "upload_preset",
+            "printeda"
+          );
 
-        const response =
+          const response =
+            await fetch(
+              "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
+              {
+                method: "POST",
+                body: data,
+              }
+            );
+
+          const result =
+            await response.json();
+
+          console.log(result);
+
+          if (
+            !result.secure_url
+          ) {
+
+            alert(
+              "Upload Failed"
+            );
+
+            return;
+          }
+
           await fetch(
-            "https://api.cloudinary.com/v1_1/dsxdkjl8h/image/upload",
+            `/api/orders/${id}`,
             {
-              method: "POST",
-              body: data,
+              method: "PATCH",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body: JSON.stringify(
+                {
+                  design:
+                    result.secure_url,
+                }
+              ),
             }
           );
 
-        const result =
-          await response.json();
-
-        if (
-          !result.secure_url
-        ) {
-
           alert(
-            "Upload failed"
+            "Design Uploaded Successfully"
           );
 
-          return;
+          fetchOrders();
+
+        } catch (error) {
+
+          console.log(error);
+
+          alert(
+            "Something went wrong"
+          );
         }
-
-        await fetch(
-          `/api/orders/${id}`,
-          {
-            method: "PATCH",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body: JSON.stringify(
-              {
-                design:
-                  result.secure_url,
-              }
-            ),
-          }
-        );
-
-        alert(
-          "Design Uploaded Successfully"
-        );
-
-        fetchOrders();
-
-      } catch (error) {
-
-        console.log(error);
-
-        alert(
-          "Something went wrong"
-        );
-      }
-    };
+      };
   };
 
   // =========================
@@ -583,7 +594,9 @@ export default function AdminPage() {
                         <div className="flex flex-col gap-2">
 
                           <a
-                            href={order.design}
+                            href={
+                              order.design
+                            }
                             target="_blank"
                             className="text-blue-600 underline font-semibold"
                           >
@@ -639,7 +652,6 @@ export default function AdminPage() {
                         value={
                           order.status
                         }
-
                         onChange={async (
                           e
                         ) => {
@@ -662,12 +674,13 @@ export default function AdminPage() {
                                       "application/json",
                                   },
 
-                                body: JSON.stringify(
-                                  {
-                                    status:
-                                      newStatus,
-                                  }
-                                ),
+                                body:
+                                  JSON.stringify(
+                                    {
+                                      status:
+                                        newStatus,
+                                    }
+                                  ),
                               }
                             );
 
@@ -683,7 +696,6 @@ export default function AdminPage() {
 
                           }
                         }}
-
                         className="border p-2 rounded-lg"
                       >
 
@@ -720,7 +732,6 @@ export default function AdminPage() {
 
                       <div className="flex flex-wrap gap-2">
 
-                        {/* EDIT */}
                         <button
                           onClick={async () => {
 
@@ -759,21 +770,20 @@ export default function AdminPage() {
                                 ? "Completed"
                                 : order.status;
 
-                            try {
+                            await fetch(
+                              `/api/orders/${order._id}`,
+                              {
+                                method:
+                                  "PATCH",
 
-                              await fetch(
-                                `/api/orders/${order._id}`,
-                                {
-                                  method:
-                                    "PATCH",
+                                headers:
+                                  {
+                                    "Content-Type":
+                                      "application/json",
+                                  },
 
-                                  headers:
-                                    {
-                                      "Content-Type":
-                                        "application/json",
-                                    },
-
-                                  body: JSON.stringify(
+                                body:
+                                  JSON.stringify(
                                     {
                                       paid:
                                         updatedPaid,
@@ -788,22 +798,11 @@ export default function AdminPage() {
                                         updatedStatus,
                                     }
                                   ),
-                                }
-                              );
+                              }
+                            );
 
-                              fetchOrders();
-
-                            } catch (
-                              error
-                            ) {
-
-                              console.log(
-                                error
-                              );
-
-                            }
+                            fetchOrders();
                           }}
-
                           className="bg-blue-600 text-white px-4 py-2 rounded-lg"
                         >
                           Edit
@@ -812,27 +811,29 @@ export default function AdminPage() {
                         {/* WHATSAPP */}
                         <a
                           href={`https://wa.me/91${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-                            `Your Order Has Been Received
+`Your Order Has Been Received
 
 Order ID: ${order.orderId}
+
 Product: ${order.product}
+
 Total Amount: ₹${order.amount}
+
 Paid: ₹${order.paid}
+
 Remaining: ₹${order.remaining}
 
-Thank you for choosing Printeda Powered by Anwar Computer`
+Status: ${order.status}
+
+Thank you for choosing Printeda`
                           )}`}
-
                           target="_blank"
-
                           rel="noopener noreferrer"
-
                           className="bg-green-500 text-white px-4 py-2 rounded-lg"
                         >
                           WhatsApp
                         </a>
 
-                        {/* DELETE */}
                         <button
                           onClick={() =>
                             deleteOrder(
@@ -875,7 +876,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
               <input
                 placeholder="Customer Name"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -888,7 +888,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
               <input
                 placeholder="Phone"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -901,7 +900,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
               <input
                 placeholder="Product"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -915,7 +913,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
                 type="number"
                 placeholder="Quantity"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -931,7 +928,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
                 type="number"
                 placeholder="Amount"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -947,7 +943,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
                 type="number"
                 placeholder="Paid"
                 className="border p-3 rounded-xl"
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -961,7 +956,6 @@ Thank you for choosing Printeda Powered by Anwar Computer`
 
             </div>
 
-            {/* AUTO REMAINING */}
             <div className="mt-4 text-lg font-semibold text-red-600">
 
               Remaining:
@@ -978,9 +972,7 @@ Thank you for choosing Printeda Powered by Anwar Computer`
                 onClick={
                   createOrder
                 }
-
                 disabled={creating}
-
                 className="bg-black text-white px-6 py-3 rounded-xl font-semibold"
               >
                 {creating
