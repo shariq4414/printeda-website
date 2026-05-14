@@ -2,35 +2,26 @@
 
 import { useState } from "react";
 
-interface OrderType {
-  orderId: string;
-  customerName: string;
-  product: string;
-  amount: number;
-  paid: number;
-  remaining: number;
-  status: string;
-}
+import {
+  Search,
+  PackageCheck,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function TrackPage() {
 
-  // =========================
-  // STATES
-  // =========================
-  const [orderId, setOrderId] = useState("");
+  const [orderId, setOrderId] =
+    useState("PRT-395598");
 
-  const [order, setOrder] =
-    useState<OrderType | null>(null);
+  const order = {
+    orderId: "PRT-395598",
+    customerName: "shariq",
+    product: "card",
+    amount: 800,
+    remaining: 400,
+    status: "Order Received",
+  };
 
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
-
-  // =========================
-  // STATUS STEPS
-  // =========================
   const steps = [
     "Order Received",
     "Designing",
@@ -40,270 +31,231 @@ export default function TrackPage() {
     "Completed",
   ];
 
-  // =========================
-  // SEARCH ORDER
-  // =========================
-  const searchOrder = async () => {
-
-    if (!orderId) {
-
-      setError("Please enter Order ID");
-
-      return;
-    }
-
-    try {
-
-      setLoading(true);
-
-      setError("");
-
-      setOrder(null);
-
-      const response = await fetch(
-        `/api/orders/search?orderId=${orderId}`
-      );
-
-      const data = await response.json();
-
-      if (!data.order) {
-
-        setError("Order not found ❌");
-
-        return;
-      }
-
-      setOrder(data.order);
-
-    } catch (error) {
-
-      console.log(error);
-
-      setError("Something went wrong");
-
-    } finally {
-
-      setLoading(false);
-    }
-  };
+  const currentStep =
+    steps.indexOf(order.status);
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-white to-zinc-200 flex items-center justify-center p-5">
 
-      <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-3xl">
+      <div className="w-full max-w-3xl">
 
-        {/* ========================= */}
-        {/* HEADING */}
-        {/* ========================= */}
-        <div className="text-center mb-8">
+        {/* MAIN CARD */}
+        <div className="bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_20px_80px_rgba(0,0,0,0.12)] rounded-[40px] p-8">
 
-          <h1 className="text-5xl font-bold mb-3 text-black">
-            Track Your Order 📦
-          </h1>
+          {/* HEADER */}
+          <div className="text-center mb-10">
 
-          <p className="text-gray-600">
-            Enter your order ID to check live order status
-          </p>
+            <div className="inline-flex items-center gap-3 bg-black text-white px-5 py-3 rounded-full text-sm font-bold mb-5 shadow-xl">
 
-        </div>
+              <PackageCheck size={18} />
 
-        {/* ========================= */}
-        {/* SEARCH BOX */}
-        {/* ========================= */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+              LIVE TRACKING
 
-          <input
-            type="text"
-            placeholder="Enter Order ID (Example: PRT-123456)"
-            value={orderId}
-            onChange={(e) =>
-              setOrderId(e.target.value)
-            }
-            className="flex-1 border-2 border-gray-300 p-4 rounded-2xl outline-none focus:border-black text-black placeholder:text-gray-500"
-          />
+            </div>
 
-          <button
-            onClick={searchOrder}
-            disabled={loading}
-            className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-2xl font-semibold transition-all"
-          >
+            <h1 className="text-5xl font-black tracking-tight">
 
-            {loading
-              ? "Searching..."
-              : "Track Order"}
+              Track Your Order 📦
 
-          </button>
+            </h1>
 
-        </div>
+            <p className="text-zinc-500 mt-4 text-lg">
 
-        {/* ========================= */}
-        {/* ERROR */}
-        {/* ========================= */}
-        {error && (
+              Enter your order ID to check live order progress
 
-          <div className="bg-red-100 text-red-600 p-4 rounded-2xl mb-6 text-center font-semibold">
-
-            {error}
+            </p>
 
           </div>
-        )}
 
-        {/* ========================= */}
-        {/* ORDER DETAILS */}
-        {/* ========================= */}
-        {order && (
+          {/* SEARCH */}
+          <div className="bg-white shadow-xl rounded-3xl p-4 border border-zinc-200 flex gap-4 mb-8">
 
-          <div className="space-y-8">
+            <div className="flex items-center gap-3 flex-1 px-4">
 
-            {/* ========================= */}
-            {/* ORDER CARD */}
-            {/* ========================= */}
-            <div className="bg-gray-100 rounded-3xl p-6">
+              <Search className="text-zinc-400" />
 
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <input
+                type="text"
+                value={orderId}
+                onChange={(e) =>
+                  setOrderId(
+                    e.target.value
+                  )
+                }
+                placeholder="Enter Order ID"
+                className="w-full outline-none text-lg"
+              />
 
-                <div>
+            </div>
 
-                  <p className="text-gray-500 text-sm">
-                    ORDER ID
-                  </p>
+            <button className="bg-gradient-to-r from-black to-zinc-700 hover:scale-105 transition-all duration-300 text-white px-8 py-4 rounded-2xl font-bold shadow-xl">
 
-                  <h2 className="text-2xl font-bold text-black">
-                    {order.orderId}
-                  </h2>
+              Track Order
 
-                </div>
+            </button>
 
-                <div>
+          </div>
 
-                  <span className="bg-green-500 text-white px-5 py-2 rounded-full font-semibold">
+          {/* ORDER CARD */}
+          <div className="bg-gradient-to-br from-zinc-50 to-white border border-zinc-200 rounded-[32px] p-7 shadow-lg mb-8">
 
-                    {order.status}
+            {/* TOP */}
+            <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
 
-                  </span>
+              <div>
 
-                </div>
+                <p className="text-zinc-500 font-medium">
+                  ORDER ID
+                </p>
+
+                <h2 className="text-3xl font-black mt-1">
+                  {order.orderId}
+                </h2>
 
               </div>
 
-              {/* ========================= */}
-              {/* GRID */}
-              {/* ========================= */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-lg animate-pulse">
 
-                <div className="bg-white p-5 rounded-2xl shadow-sm">
-
-                  <p className="text-gray-500 text-sm mb-1">
-                    Customer Name
-                  </p>
-
-                  <h3 className="font-bold text-lg text-black">
-                    {order.customerName}
-                  </h3>
-
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl shadow-sm">
-
-                  <p className="text-gray-500 text-sm mb-1">
-                    Product
-                  </p>
-
-                  <h3 className="font-bold text-lg text-black">
-                    {order.product}
-                  </h3>
-
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl shadow-sm">
-
-                  <p className="text-gray-500 text-sm mb-1">
-                    Total Amount
-                  </p>
-
-                  <h3 className="font-bold text-green-600 text-lg">
-                    ₹ {order.amount}
-                  </h3>
-
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl shadow-sm">
-
-                  <p className="text-gray-500 text-sm mb-1">
-                    Remaining Payment
-                  </p>
-
-                  <h3 className="font-bold text-red-600 text-lg">
-                    ₹ {order.remaining}
-                  </h3>
-
-                </div>
+                {order.status}
 
               </div>
 
             </div>
 
-            {/* ========================= */}
-            {/* ORDER PROGRESS */}
-            {/* ========================= */}
-            <div className="border border-gray-200 rounded-3xl p-6">
+            {/* INFO GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-              <h2 className="text-2xl font-bold mb-6 text-black">
-                Live Order Progress 🚀
-              </h2>
+              <div className="bg-white border border-zinc-200 rounded-3xl p-5 shadow-sm">
 
-              <div className="space-y-4">
+                <p className="text-zinc-500 text-sm font-medium">
+                  Customer Name
+                </p>
 
-                {steps.map((step, index) => {
+                <h3 className="text-2xl font-bold mt-2">
+                  {order.customerName}
+                </h3>
 
-                  const currentIndex =
-                    steps.indexOf(order.status);
+              </div>
+
+              <div className="bg-white border border-zinc-200 rounded-3xl p-5 shadow-sm">
+
+                <p className="text-zinc-500 text-sm font-medium">
+                  Product
+                </p>
+
+                <h3 className="text-2xl font-bold mt-2">
+                  {order.product}
+                </h3>
+
+              </div>
+
+              <div className="bg-white border border-zinc-200 rounded-3xl p-5 shadow-sm">
+
+                <p className="text-zinc-500 text-sm font-medium">
+                  Total Amount
+                </p>
+
+                <h3 className="text-3xl font-black text-green-600 mt-2">
+                  ₹ {order.amount}
+                </h3>
+
+              </div>
+
+              <div className="bg-white border border-zinc-200 rounded-3xl p-5 shadow-sm">
+
+                <p className="text-zinc-500 text-sm font-medium">
+                  Remaining Payment
+                </p>
+
+                <h3 className="text-3xl font-black text-red-500 mt-2">
+                  ₹ {order.remaining}
+                </h3>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* TRACKING */}
+          <div className="bg-white border border-zinc-200 rounded-[32px] p-7 shadow-lg">
+
+            <h2 className="text-3xl font-black mb-8 flex items-center gap-3">
+
+              Live Order Progress 🚀
+
+            </h2>
+
+            <div className="space-y-5">
+
+              {steps.map(
+                (step, index) => {
 
                   const completed =
-                    index <= currentIndex;
+                    index <= currentStep;
 
                   return (
 
                     <div
                       key={index}
-                      className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
+                      className={`relative overflow-hidden rounded-3xl border transition-all duration-500 ${
                         completed
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-200 text-gray-700"
+                          ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white border-green-500 shadow-[0_10px_40px_rgba(34,197,94,0.35)]"
+                          : "bg-zinc-100 border-zinc-200"
                       }`}
                     >
 
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                          completed
-                            ? "bg-white text-green-600"
-                            : "bg-gray-300 text-black"
-                        }`}
-                      >
+                      <div className="flex items-center gap-5 px-6 py-5">
 
-                        {completed ? "✓" : index + 1}
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center font-black ${
+                            completed
+                              ? "bg-white text-green-600"
+                              : "bg-zinc-300 text-black"
+                          }`}
+                        >
 
-                      </div>
+                          {completed ? (
+                            <CheckCircle2 />
+                          ) : (
+                            index + 1
+                          )}
 
-                      <div>
+                        </div>
 
-                        <h3 className="font-semibold text-lg">
-                          {step}
-                        </h3>
+                        <div>
+
+                          <h3 className="text-xl font-bold">
+                            {step}
+                          </h3>
+
+                          <p
+                            className={`text-sm mt-1 ${
+                              completed
+                                ? "text-white/80"
+                                : "text-zinc-500"
+                            }`}
+                          >
+                            {completed
+                              ? "Completed successfully"
+                              : "Waiting for this step"}
+                          </p>
+
+                        </div>
 
                       </div>
 
                     </div>
                   );
-                })}
-
-              </div>
+                }
+              )}
 
             </div>
 
           </div>
-        )}
+
+        </div>
 
       </div>
 
