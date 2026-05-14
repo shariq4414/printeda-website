@@ -4,12 +4,12 @@ import connectDB from "@/lib/mongodb";
 
 import Order from "@/models/Order";
 
-// ==========================
-// PATCH ORDER
-// ==========================
+// ======================
+// UPDATE ORDER
+// ======================
 export async function PATCH(
   req: Request,
-  context: any
+  { params }: { params: { id: string } }
 ) {
 
   try {
@@ -21,7 +21,7 @@ export async function PATCH(
 
     const updatedOrder =
       await Order.findByIdAndUpdate(
-        context.params.id,
+        params.id,
         body,
         {
           new: true,
@@ -48,12 +48,12 @@ export async function PATCH(
   }
 }
 
-// ==========================
+// ======================
 // DELETE ORDER
-// ==========================
+// ======================
 export async function DELETE(
   req: Request,
-  context: any
+  { params }: { params: { id: string } }
 ) {
 
   try {
@@ -61,7 +61,7 @@ export async function DELETE(
     await connectDB();
 
     await Order.findByIdAndDelete(
-      context.params.id
+      params.id
     );
 
     return NextResponse.json({
