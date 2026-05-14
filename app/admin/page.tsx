@@ -1048,163 +1048,205 @@ Thank you for choosing Printeda 🚀`
           </table>
 
         </div>
-
         {/* MODAL */}
         {showModal && (
 
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
 
-            <div className="bg-white rounded-3xl p-8 w-full max-w-xl">
+    <div className="bg-white w-full max-w-2xl rounded-[35px] p-10 shadow-[0_20px_80px_rgba(0,0,0,0.25)] animate-in fade-in zoom-in duration-300">
 
-              <h2 className="text-4xl font-black mb-8">
-                Add Order
-              </h2>
+      {/* HEADER */}
+      <div className="mb-8">
 
-              <div className="grid grid-cols-1 gap-4">
+        <h2 className="text-5xl font-black text-black">
+          Add Order
+        </h2>
 
-                <input
-                  type="text"
-                  placeholder="Customer Name"
-                  value={
-                    formData.customerName
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      customerName:
-                        e.target.value,
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+        <p className="text-zinc-500 mt-3 text-lg">
+          Create a new customer order for Printeda
+        </p>
 
-                <input
-                  type="text"
-                  placeholder="Phone"
-                  value={
-                    formData.phone
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      phone:
-                        e.target.value,
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+      </div>
 
-                <input
-                  type="text"
-                  placeholder="Product"
-                  value={
-                    formData.product
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      product:
-                        e.target.value,
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+      {/* FORM */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                <input
-                  type="number"
-                  placeholder="Quantity"
-                  value={
-                    formData.quantity
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      quantity:
-                        Number(
-                          e.target.value
-                        ),
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+        {/* CUSTOMER */}
+        <div>
 
-                <input
-                  type="number"
-                  placeholder="Amount"
-                  value={
-                    formData.amount
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      amount:
-                        Number(
-                          e.target.value
-                        ),
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Customer Name
+          </label>
 
-                <input
-                  type="number"
-                  placeholder="Paid"
-                  value={
-                    formData.paid
-                  }
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      paid:
-                        Number(
-                          e.target.value
-                        ),
-                    })
-                  }
-                  className="border p-4 rounded-2xl"
-                />
+          <input
+            type="text"
+            placeholder="Enter customer name"
+            value={formData.customerName}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                customerName: e.target.value,
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
 
-              </div>
+        </div>
 
-              <div className="mt-5 text-xl font-bold text-red-500">
+        {/* PHONE */}
+        <div>
 
-                Remaining:
-                ₹ {
-                  formData.amount -
-                  formData.paid
-                }
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Phone Number
+          </label>
 
-              </div>
+          <input
+            type="text"
+            placeholder="Enter phone number"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                phone: e.target.value,
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
 
-              <div className="flex gap-4 mt-8">
+        </div>
 
-                <button
-                  onClick={
-                    createOrder
-                  }
-                  disabled={creating}
-                  className="bg-black text-white px-6 py-4 rounded-2xl font-bold"
-                >
-                  {creating
-                    ? "Saving..."
-                    : "Save Order"}
-                </button>
+        {/* PRODUCT */}
+        <div>
 
-                <button
-                  onClick={() =>
-                    setShowModal(false)
-                  }
-                  className="bg-zinc-200 px-6 py-4 rounded-2xl font-bold"
-                >
-                  Cancel
-                </button>
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Product
+          </label>
 
-              </div>
+          <input
+            type="text"
+            placeholder="Enter product name"
+            value={formData.product}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                product: e.target.value,
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
 
-            </div>
+        </div>
 
-          </div>
-        )}
+        {/* QUANTITY */}
+        <div>
+
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Quantity
+          </label>
+
+          <input
+            type="number"
+            placeholder="Enter quantity"
+            value={formData.quantity}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                quantity: Number(e.target.value),
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
+
+        </div>
+
+        {/* AMOUNT */}
+        <div>
+
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Total Amount
+          </label>
+
+          <input
+            type="number"
+            placeholder="Enter amount"
+            value={formData.amount}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                amount: Number(e.target.value),
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
+
+        </div>
+
+        {/* PAID */}
+        <div>
+
+          <label className="text-sm font-bold text-zinc-600 mb-2 block">
+            Paid Amount
+          </label>
+
+          <input
+            type="number"
+            placeholder="Enter paid amount"
+            value={formData.paid}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                paid: Number(e.target.value),
+              })
+            }
+            className="w-full border border-zinc-200 bg-zinc-50 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-black transition-all"
+          />
+
+        </div>
+
+      </div>
+
+      {/* REMAINING */}
+      <div className="mt-7 bg-red-50 border border-red-100 rounded-2xl p-5">
+
+        <p className="text-lg font-semibold text-zinc-600">
+          Remaining Payment
+        </p>
+
+        <h3 className="text-4xl font-black text-red-500 mt-2">
+          ₹ {formData.amount - formData.paid}
+        </h3>
+
+      </div>
+
+      {/* BUTTONS */}
+      <div className="flex items-center gap-4 mt-8">
+
+        <button
+          onClick={createOrder}
+          disabled={creating}
+          className="bg-gradient-to-r from-black to-zinc-700 hover:scale-105 transition-all duration-300 text-white px-8 py-4 rounded-2xl font-bold shadow-xl"
+        >
+          {creating
+            ? "Saving..."
+            : "Save Order"}
+        </button>
+
+        <button
+          onClick={() =>
+            setShowModal(false)
+          }
+          className="bg-zinc-200 hover:bg-zinc-300 transition-all px-8 py-4 rounded-2xl font-bold"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
+
 
       </div>
 
