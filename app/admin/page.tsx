@@ -998,7 +998,7 @@ export default function AdminPage() {
 
                           <a
                             href={`https://wa.me/91${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-`Your Order Update
+`Your Order has been recieved
 
 Order ID: ${order.orderId}
 
@@ -1012,7 +1012,7 @@ Remaining: ₹${order.remaining}
 
 Status: ${order.status}
 
-Thank you for choosing Printeda 🚀`
+Thank you for choosing Printeda powered by Anwar Computer`
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
