@@ -130,10 +130,10 @@ export default function Contact() {
                     body: formData,
                   });
 
-            //      const data = await res.json();
+                  const data = await res.json();
 
-//                  if (data.success) {
-  //                  setSuccess(true);
+                  if (data.success) {
+                    setSuccess(true);
 
                     //const name = formData.get("name");
                     //const phone = formData.get("phone");
@@ -147,7 +147,7 @@ export default function Contact() {
     //                  `https://wa.me/917599982088?text=${encodeURIComponent(message)}`,
       //                "_blank"
         //            );
-          //        }
+                 }
 
                   setLoading(false);
                 }}
