@@ -130,24 +130,24 @@ export default function Contact() {
                     body: formData,
                   });
 
-                  const data = await res.json();
+            //      const data = await res.json();
 
-                  if (data.success) {
-                    setSuccess(true);
+//                  if (data.success) {
+  //                  setSuccess(true);
 
-                    const name = formData.get("name");
-                    const phone = formData.get("phone");
+                    //const name = formData.get("name");
+                    //const phone = formData.get("phone");
 
-                    const message = `Hi Printeda,
-Name: ${name}
-Phone: ${phone}
-Service: ${finalService}`;
+                    //const message = `Hi Printeda,
+//Name: ${name}
+//Phone: ${phone}
+//Service: ${finalService}`;
 
-                    window.open(
-                      `https://wa.me/917599982088?text=${encodeURIComponent(message)}`,
-                      "_blank"
-                    );
-                  }
+  //                  window.open(
+    //                  `https://wa.me/917599982088?text=${encodeURIComponent(message)}`,
+      //                "_blank"
+        //            );
+          //        }
 
                   setLoading(false);
                 }}
