@@ -32,7 +32,7 @@ export default function Contact() {
 
             {/* WhatsApp */}
             <a
-              href="https://wa.me/919719847661?text=Hi%20Printeda%2C%20I%20want%20to%20start%20a%20printing%20project"
+              href="https://wa.me/917599982088?text=Hi%20Printeda%2C%20I%20want%20to%20start%20a%20printing%20project"
               target="_blank"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 px-5 py-3 rounded-xl font-semibold mb-10 transition"
             >
@@ -50,10 +50,10 @@ export default function Contact() {
                 <div>
                   <p className="text-sm text-slate-400">Call Us</p>
                   <a
-                    href="tel:+919719847661"
+                    href="tel:+917599982088"
                     className="font-bold hover:text-blue-400 transition"
                   >
-                    +91 9719847661
+                    +91 7599982088
                   </a>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default function Contact() {
                 </p>
 
                 <a
-                  href="https://wa.me/919719847661"
+                  href="https://wa.me/917599982088"
                   target="_blank"
                   className="inline-block mt-5 bg-green-500 text-white px-6 py-3 rounded-xl"
                 >
@@ -144,7 +144,7 @@ Phone: ${phone}
 Service: ${finalService}`;
 
                     window.open(
-                      `https://wa.me/919719847661?text=${encodeURIComponent(message)}`,
+                      `https://wa.me/917599982088?text=${encodeURIComponent(message)}`,
                       "_blank"
                     );
                   }
