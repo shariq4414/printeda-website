@@ -1,7 +1,7 @@
 import { MessageCircle } from "lucide-react";
 
 export default function WhatsAppButton() {
-  const phone = "919719847661";
+  const phone = "917599982088";
   const message =
     "Hi Printeda, I have a query regarding Printing/DSC services.";
 

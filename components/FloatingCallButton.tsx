@@ -5,7 +5,7 @@ import { Phone } from "lucide-react";
 export default function FloatingCall() {
   return (
     <a
-      href="tel:+919719847661"
+      href="tel:+917599982088"
       aria-label="Call Printeda"
       className="
         fixed bottom-20 right-6

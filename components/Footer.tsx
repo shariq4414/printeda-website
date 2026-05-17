@@ -39,17 +39,17 @@ export default function Footer() {
             <li className="flex items-center gap-2">
               📞
               <a
-                href="tel:+919719847661"
+                href="tel:+917599982088"
                 className="hover:text-white transition"
               >
-                +91 9719847661
+                +91 7599982088
               </a>
             </li>
 
             <li className="flex items-center gap-2">
               💬
               <a
-                href="https://wa.me/919719847661"
+                href="https://wa.me/917599982088"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-green-400 hover:text-green-300 transition"

@@ -116,7 +116,7 @@ export default function WhyUs() {
           </p>
 
           <a
-            href="https://wa.me/919719847661"
+            href="https://wa.me/917599982088"
             target="_blank"
             className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition hover:scale-105"
           >

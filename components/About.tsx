@@ -145,7 +145,7 @@ export default function About() {
           </p>
 
           <a
-            href="https://wa.me/919719847661"
+            href="https://wa.me/917599982088"
             target="_blank"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition hover:scale-105"
           >

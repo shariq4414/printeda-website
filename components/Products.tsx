@@ -136,7 +136,7 @@ export default function Products() {
 
                 {/* WhatsApp CTA */}
                 <a
-                  href={`https://wa.me/919719847661?text=Hi%2C%20I%20want%20to%20order%20${item.title}`}
+                  href={`https://wa.me/917599982088?text=Hi%2C%20I%20want%20to%20order%20${item.title}`}
                   target="_blank"
                   className="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-semibold transition"
                 >
@@ -156,7 +156,7 @@ export default function Products() {
           </p>
 
           <a
-            href="https://wa.me/919719847661"
+            href="https://wa.me/917599982088"
             target="_blank"
             className="inline-block bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg transition hover:scale-105"
           >

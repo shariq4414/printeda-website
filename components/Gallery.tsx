@@ -144,7 +144,7 @@ export default function Gallery() {
           </p>
 
           <a
-            href="https://wa.me/919719847661?text=Hi%2C%20I%20want%20printing%20like%20your%20recent%20work"
+            href="https://wa.me/917599982088?text=Hi%2C%20I%20want%20printing%20like%20your%20recent%20work"
             target="_blank"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold transition hover:scale-105"
           >

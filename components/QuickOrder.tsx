@@ -91,7 +91,7 @@ export default function QuickOrder() {
           </p>
 
           <a
-            href="https://wa.me/919719847661?text=Hi%2C%20I%20want%20to%20place%20a%20printing%20order"
+            href="https://wa.me/917599982088?text=Hi%2C%20I%20want%20to%20place%20a%20printing%20order"
             target="_blank"
             className="inline-block bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition hover:scale-105"
           >
